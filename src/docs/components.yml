@@ -12,12 +12,12 @@ components:
           type: string
         role:
           type: string
-          enum: [clinician, admin]
+          enum: [physician, admin]
       example:
         id: 5ebac534954b54139806c112
         email: fake@example.com
         name: fake name
-        role: clinician
+        role: physician
 
     Token:
       type: object
