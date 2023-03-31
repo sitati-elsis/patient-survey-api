@@ -1,0 +1,38 @@
+{
+  "name": "experinio",
+  "version": "1.0.0",
+  "main": "src/index.js",
+  "repository": "git@bitbucket.org:jnngroup/experinio-api.git",
+  "author": "Norbert Glen <norbertglen7@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "start": "pm2 start ecosystem.config.json --no-daemon",
+    "dev": "cross-env NODE_ENV=development nodemon src/index.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "compression": "^1.7.4",
+    "cors": "^2.8.5",
+    "cross-env": "^7.0.3",
+    "dayjs": "^1.11.7",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "express-mongo-sanitize": "^2.2.0",
+    "express-rate-limit": "^6.7.0",
+    "helmet": "^6.0.1",
+    "http-status": "^1.6.2",
+    "joi": "^17.9.1",
+    "mongoose": "^7.0.3",
+    "morgan": "^1.10.0",
+    "nodemailer": "^6.9.1",
+    "nodemon": "^2.0.22",
+    "passport": "^0.6.0",
+    "passport-jwt": "^4.0.1",
+    "pm2": "^5.3.0",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^4.6.2",
+    "validator": "^13.9.0",
+    "winston": "^3.8.2",
+    "xss-clean": "^0.1.1"
+  }
+}
