@@ -5,8 +5,8 @@ const { authService, userService, tokenService, emailService } = require('../ser
 const register = catchAsync(async (req, res) => {
   const user = await userService.createUser(req.body);
   const token = await tokenService.generateVerifyEmailToken(user);
-  await emailService.sendVerificationEmail(user.email, token);
-  res.status(httpStatus.CREATED).send({ user });
+  emailService.sendVerificationEmail(user.email, token);
+  res.status(httpStatus.CREATED).send({ user, token });
 });
 
 const login = catchAsync(async (req, res) => {
