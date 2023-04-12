@@ -23,6 +23,7 @@ const envVarsSchema = Joi.object()
     SENDGRID_API_KEY: Joi.string().required().description('Sendgrid Mail Web Api Key for sending emails'),
     SENDGRID_VERIFY_EMAIL_TEMPLATE_ID: Joi.string().required().description('id of Sendgrid email template sent for user email verification'),
     SENDGRID_RESET_PASSWORD_TEMPLATE_ID: Joi.string().required().description('id of Sendgrid email template sent for user password reset'),
+    SENDGRID_JOIN_TEAM_TEMPLATE_ID: Joi.string().required().description('id of Sendgrid email template sent for user to join an organization'),
   })
   .unknown();
 
@@ -52,7 +53,8 @@ module.exports = {
       apiKey: envVars.SENDGRID_API_KEY,
       templates: {
         verifyEmail: envVars.SENDGRID_VERIFY_EMAIL_TEMPLATE_ID,
-        resetPassword: envVars.SENDGRID_RESET_PASSWORD_TEMPLATE_ID
+        resetPassword: envVars.SENDGRID_RESET_PASSWORD_TEMPLATE_ID,
+        joinTeamInvitation: envVars.SENDGRID_JOIN_TEAM_TEMPLATE_ID,
       }
     },
     from: envVars.EMAIL_FROM,

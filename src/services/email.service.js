@@ -49,8 +49,23 @@ const sendVerificationEmail = async (user, token) => {
   await sendEmail(to, template_id, template_data);
 };
 
+/**
+ * Send team invitation email
+ * @param {User} user
+ * @param {string} token
+ * @returns {Promise}
+ */
+const sendTeamInvitationEmail = async (user, token) => {
+  const { email: to } = user;
+  const accept_invite_link = `${config.webUrl}/accept-invite?token=${token}`;
+  const template_id = config.email.sendgrid.templates.joinTeamInvitation
+  const template_data = { accept_invite_link }
+  await sendEmail(to, template_id, template_data);
+};
+
 module.exports = {
   sendEmail,
   sendResetPasswordEmail,
   sendVerificationEmail,
+  sendTeamInvitationEmail
 };

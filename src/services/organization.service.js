@@ -1,7 +1,10 @@
 const httpStatus = require('http-status');
+const mongoose = require('mongoose')
 const { Organization } = require('../models');
 const ApiError = require('../utils/ApiError');
-const { getUserById } = require('./user.service');
+const { getUserById, getUserByEmail } = require('./user.service');
+const tokenService = require('./token.service')
+const emailService = require('./email.service')
 
 /**
  * Create a organization
@@ -94,7 +97,34 @@ const addUserById = async (userId, organizationId, role) => {
     role: role === 'owner' ? 'admin' : role
   })
   await organization.save();
-  return organization;
+  return true;
+};
+
+/**
+ * Invite user to organization
+ * @param {ObjectId} email - The email of the user to be invited
+ * @param {ObjectId} organizationId - The id of the organization
+ * @param {String} role - The role of the user in the organization
+ * @returns {Promise<boolean>}
+ */
+
+const inviteUserByEmail = async (email, organizationId, role) => {
+  const organization = await getOrganizatioById(organizationId);
+  let user = await getUserByEmail(email);
+  if (!organization) {
+    throw new ApiError(httpStatus.NOT_FOUND, `Organization ${organizationId} not found`);
+  }
+  if (user && await Organization.userExists(user.id, organizationId)) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'User already exists');
+  }
+  if (!user) {
+    const id = new mongoose.Types.ObjectId();
+    user = { id, email, role, organizationId }
+  }
+  const token = await tokenService.generateTeamInvitationToken(user);
+  await emailService.sendTeamInvitationEmail(user, token);
+
+  return true;
 };
 
 /**
@@ -118,5 +148,6 @@ module.exports = {
   getOrganizationByEmail,
   updateOrganizationById,
   addUserById,
+  inviteUserByEmail,
   deleteOrganizationById,
 };

@@ -1,5 +1,5 @@
 const httpStatus = require('http-status');
-const { User } = require('../models');
+const { User, Organization } = require('../models');
 const ApiError = require('../utils/ApiError');
 
 /**
@@ -47,6 +47,15 @@ const getUserByEmail = async (email) => {
 };
 
 /**
+ * Get user organization
+ * @param {ObjectId} userId
+ * @returns {Promise<Organization>}
+ */
+const getOrganiation = async (userId) => {
+  return Organization.findOne({ 'users.userId': userId });
+};
+
+/**
  * Update user by id
  * @param {ObjectId} userId
  * @param {Object} updateBody
@@ -86,4 +95,5 @@ module.exports = {
   getUserByEmail,
   updateUserById,
   deleteUserById,
+  getOrganiation,
 };

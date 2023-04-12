@@ -1,9 +1,12 @@
 const httpStatus = require('http-status');
+const jwt = require('jsonwebtoken');
 const tokenService = require('./token.service');
 const userService = require('./user.service');
 const Token = require('../models/token.model');
 const ApiError = require('../utils/ApiError');
 const { tokenTypes } = require('../config/tokens');
+const config = require('../config/config');
+const organizationService = require('./organization.service');
 
 /**
  * Login with username and password
@@ -32,7 +35,7 @@ const logout = async (refreshToken) => {
   if (!refreshTokenDoc) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Not found');
   }
-  await refreshTokenDoc.remove();
+  await refreshTokenDoc.deleteOne();
 };
 
 /**
@@ -93,10 +96,39 @@ const verifyEmail = async (verifyEmailToken) => {
   }
 };
 
+/**
+ * Accept join organization invitation
+ * @param {string} teamInvitationToken
+ * @returns {Promise}
+ */
+const acceptInvitation = async (teamInvitationToken, userProfile) => {
+  try {
+    const teamInvitationTokenDoc = await tokenService.verifyToken(teamInvitationToken, tokenTypes.JOIN_TEAM);
+    let user = await userService.getUserById(teamInvitationTokenDoc.user);
+    const { metadata } = jwt.verify(teamInvitationToken, config.jwt.secret);
+    if (!user) {
+      user = {
+        id: teamInvitationTokenDoc.user,
+        firstName: userProfile.firstName,
+        lastName: userProfile.lastName,
+        email: metadata.email,
+        password: userProfile.password,
+      }
+      user = await userService.createUser(user)
+    }
+    await organizationService.addUserById(user.id, metadata.organizationId, metadata.role)
+    await Token.deleteMany({ user: user.id, type: tokenTypes.JOIN_TEAM });
+    await userService.updateUserById(user.id, { isEmailVerified: true });
+  } catch (error) {
+    throw new ApiError(httpStatus.UNAUTHORIZED, 'Unable to process registration');
+  }
+};
+
 module.exports = {
   loginUserWithEmailAndPassword,
   logout,
   refreshAuth,
   resetPassword,
   verifyEmail,
+  acceptInvitation
 };

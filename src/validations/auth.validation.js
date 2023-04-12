@@ -51,6 +51,17 @@ const verifyEmail = {
   }),
 };
 
+const acceptInvite = {
+  query: Joi.object().keys({
+    token: Joi.string().required(),
+  }),
+  body: Joi.object().keys({
+    firstName: Joi.string().required(),
+    lastName: Joi.string().required(),
+    password: Joi.string().required().custom(password),
+  }),
+};
+
 module.exports = {
   register,
   login,
@@ -59,4 +70,5 @@ module.exports = {
   forgotPassword,
   resetPassword,
   verifyEmail,
+  acceptInvite
 };

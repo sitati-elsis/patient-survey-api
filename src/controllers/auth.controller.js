@@ -21,7 +21,9 @@ const login = catchAsync(async (req, res) => {
   const { email, password } = req.body;
   const user = await authService.loginUserWithEmailAndPassword(email, password);
   const tokens = await tokenService.generateAuthTokens(user);
-  res.send({ user, tokens });
+  const organization = await userService.getOrganiation(user.id)
+  const role = organization.users.find(u => u.userId.toString() === user.id)?.role
+  res.send({ user, tokens, organization, role });
 });
 
 const logout = catchAsync(async (req, res) => {
@@ -56,6 +58,11 @@ const verifyEmail = catchAsync(async (req, res) => {
   res.status(httpStatus.NO_CONTENT).send();
 });
 
+const acceptTeamInvite = catchAsync(async (req, res) => {
+  await authService.acceptInvitation(req.query.token, req.body);
+  res.status(httpStatus.NO_CONTENT).send();
+});
+
 module.exports = {
   register,
   login,
@@ -65,4 +72,5 @@ module.exports = {
   resetPassword,
   sendVerificationEmail,
   verifyEmail,
+  acceptTeamInvite
 };
