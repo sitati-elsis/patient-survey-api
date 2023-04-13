@@ -35,10 +35,18 @@ const deleteOrganization = catchAsync(async (req, res) => {
 });
 
 const inviteMember = catchAsync(async (req, res) => {
-  const {email, role} = req.body
-  const {organizationId} = req.params
+  const { email, role } = req.body
+  const { organizationId } = req.params
   await organizationService.inviteUserByEmail(email, organizationId, role);
   res.status(httpStatus.NO_CONTENT).send();
+});
+
+const getOrganizationMembers = catchAsync(async (req, res) => {
+  const filter = pick(req.query, ['name', 'email', 'role']);
+  const options = pick(req.query, ['sortBy', 'limit', 'page']);
+  const { organizationId } = req.params
+  const result = await organizationService.queryOrganizationMembers(organizationId, filter, options);
+  res.send(result);
 });
 
 module.exports = {
@@ -47,5 +55,6 @@ module.exports = {
   getOrganization,
   updateOrganization,
   deleteOrganization,
-  inviteMember
+  inviteMember,
+  getOrganizationMembers
 };

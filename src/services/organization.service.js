@@ -4,7 +4,8 @@ const { Organization } = require('../models');
 const ApiError = require('../utils/ApiError');
 const { getUserById, getUserByEmail } = require('./user.service');
 const tokenService = require('./token.service')
-const emailService = require('./email.service')
+const emailService = require('./email.service');
+const userService = require('./user.service');
 
 /**
  * Create a organization
@@ -128,6 +129,31 @@ const inviteUserByEmail = async (email, organizationId, role) => {
 };
 
 /**
+ * Query for organization members
+ * @param {Object} filter - Mongo filter
+ * @param {Object} options - Query options
+ * @param {string} [options.sortBy] - Sort option in the format: sortField:(desc|asc)
+ * @param {number} [options.limit] - Maximum number of results per page (default = 10)
+ * @param {number} [options.page] - Current page (default = 1)
+ * @returns {Promise<QueryResult>}
+ */
+const queryOrganizationMembers = async (organizationId, filter, options) => {
+  const organization = await getOrganizatioById(organizationId)
+  let { role, ...otherFilters } = filter
+  let userIds
+  if (role) {
+    userIds = organization.users.filter(u => u.role === role).map(u => u.userId.toString())
+  } else {
+    userIds = organization.users.map(u => u.userId.toString())
+  }
+  if (userIds) {
+    otherFilters = Object.assign(otherFilters, { "_id": { "$in": userIds }})
+  }
+  const members = await userService.queryUsers(otherFilters, options);
+  return members;
+};
+
+/**
  * Delete organization by id
  * @param {ObjectId} organizationId
  * @returns {Promise<Organization>}
@@ -150,4 +176,5 @@ module.exports = {
   addUserById,
   inviteUserByEmail,
   deleteOrganizationById,
+  queryOrganizationMembers
 };

@@ -20,12 +20,17 @@ router
   );
 
   router
-  .route("/:organizationId/invitations")
+  .route("/:organizationId/members")
   .post(
     auth("manageOrganization"),
     validate(orgValidation.inviteMember),
     orgController.inviteMember
   )
+  .get(
+    auth("getOrganizations"),
+    validate(orgValidation.getMembers),
+    orgController.getOrganizationMembers
+  );
 
 // router
 //   .route("/:userId")

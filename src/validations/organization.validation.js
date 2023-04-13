@@ -53,11 +53,26 @@ const inviteMember = {
     .min(1),
 };
 
+const getMembers = {
+  params: Joi.object().keys({
+    organizationId: Joi.required().custom(objectId),
+  }),
+  query: Joi.object().keys({
+    name: Joi.string(),
+    email: Joi.string().email(),
+    role: Joi.string(),
+    sortBy: Joi.string(),
+    limit: Joi.number().integer(),
+    page: Joi.number().integer(),
+  }),
+};
+
 module.exports = {
   createOrganization,
   getOrganizations,
   getOrganization,
   updateOrganization,
   deleteOrganization,
-  inviteMember
+  inviteMember,
+  getMembers
 };
