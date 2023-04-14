@@ -22,11 +22,11 @@ const questionSchema = mongoose.Schema(
     },
     description: {
       type: String,
-      required: true,
       trim: true,
     },
     type: {
       type: String,
+      required: true,
       enum: inputTypes,
       default: "text",
       trim: true,
@@ -45,6 +45,24 @@ const questionSchema = mongoose.Schema(
       value: String,
       text: String
     }],
+
+    /** rating type */
+
+    rateMin: {
+      type: Number,
+      default: 0,
+    },
+    rateMax: {
+      type: Number,
+      default: 10,
+    },
+    minRateDescription: {
+      type: String,
+    },
+    maxRateDescription: {
+      type: String,
+    },
+    /** end rating type */
     order: {
       type: Number,
     },
@@ -80,8 +98,8 @@ questionSchema.plugin(paginate);
  * @param {ObjectId} [surveyId] - The id of the survey owning the question
  * @returns {Promise<boolean>}
  */
-questionSchema.statics.nameExists = async function (name, surveyId) {
-  const question = await this.findOne({ name, surveyId });
+questionSchema.statics.nameExists = async function (name, surveyId, excludeQuestionId) {
+  const question = await this.findOne({ name, surveyId, ...(excludeQuestionId && { _id: { $ne: excludeQuestionId } }) });
   return !!question;
 };
 

@@ -1,5 +1,6 @@
 const Joi = require("joi");
 const { objectId } = require("./custom.validation");
+const { inputTypes } = require("../config/inputs");
 
 const createSurvey = {
   query: Joi.object().keys({
@@ -11,7 +12,44 @@ const createSurvey = {
     preferences: Joi.object().keys({
       membersCanSendManual: Joi.boolean(),
       sendOnTeamBehalf: Joi.boolean(),
-    })
+    }),
+    questions: Joi.array().items(
+      Joi.object().keys({
+        name: Joi.string().required(),
+        title: Joi.string().required(),
+        description: Joi.string(),
+        type: Joi.string().required().valid(...inputTypes),
+        isRequired: Joi.boolean(),
+        choices: Joi.array().items(Joi.string()),
+        columns: Joi.alternatives().conditional('type', {
+          is: 'matrix',
+          then: Joi.array().items(Joi.string()).required()
+        }),
+        rows: Joi.alternatives().conditional('type', {
+          is: 'matrix',
+          then: Joi.array().items(Joi.object().keys({
+            value: Joi.string(),
+            text: Joi.string(),
+          }))
+        }),
+        rateMin: Joi.alternatives().conditional('type', {
+          is: 'rating',
+          then: Joi.number().required()
+        }),
+        rateMax: Joi.alternatives().conditional('type', {
+          is: 'rating',
+          then: Joi.number().required()
+        }),
+        minRateDescription: Joi.alternatives().conditional('type', { is: 'rating', then: Joi.string().required() }),
+        maxRateDescription: Joi.alternatives().conditional('type', { is: 'rating', then: Joi.string().required() }),
+        order: Joi.number(),
+        visibleIf: Joi.string(),
+        placeholder: Joi.string(),
+        showOtherItem: Joi.boolean(),
+        otherPlaceholder: Joi.string(),
+        otherText: Joi.string(),
+      })
+    )
   }),
 };
 

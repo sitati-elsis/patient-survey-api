@@ -1,7 +1,8 @@
 const httpStatus = require('http-status');
 const { Survey } = require('../models');
 const ApiError = require('../utils/ApiError');
-const organizationService = require('./organization.service')
+const organizationService = require('./organization.service');
+const questionService = require('./question.service');
 
 /**
  * Create a survey
@@ -16,8 +17,16 @@ const createSurvey = async (organizationId, surveyBody) => {
   if (await Survey.nameExists(surveyBody.name, organization.id)) {
     throw new ApiError(httpStatus.BAD_REQUEST, 'A survey with the name already exists for this organization');
   }
-  const survey = Object.assign(surveyBody, { organizationId })
-  return Survey.create(survey);
+  const { questions, ...body } = surveyBody
+  const survey = Object.assign(body, { organizationId })
+
+  if (questions) {
+    const newSurvey = await Survey.create(survey);
+    await Promise.all(questions.map(question => questionService.createQuestion(newSurvey.id, question)))
+    return newSurvey
+  } else {
+    return Survey.create(survey);
+  }
 };
 
 /**
