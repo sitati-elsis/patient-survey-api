@@ -1,8 +1,8 @@
 const express = require("express");
 const auth = require("../../middlewares/auth");
 const validate = require("../../middlewares/validate");
-const orgValidation = require("../../validations/organization.validation");
-const orgController = require("../../controllers/organization.controller");
+const { organizationValidation } = require("../../validations");
+const { organizationController } = require("../../controllers");
 
 const router = express.Router();
 
@@ -10,62 +10,62 @@ router
   .route("/")
   .post(
     auth("manageOrganization"),
-    validate(orgValidation.createOrganization),
-    orgController.createOrganization
+    validate(organizationValidation.createOrganization),
+    organizationController.createOrganization
   )
   .get(
     auth("getOrganizations"),
-    validate(orgValidation.getOrganizations),
-    orgController.getOrganizations
+    validate(organizationValidation.getOrganizations),
+    organizationController.getOrganizations
   );
 
-  router
+router
   .route("/:organizationId/members")
   .post(
     auth("manageOrganization"),
-    validate(orgValidation.inviteMember),
-    orgController.inviteMember
+    validate(organizationValidation.inviteMember),
+    organizationController.inviteMember
   )
   .get(
     auth("getOrganizations"),
-    validate(orgValidation.getMembers),
-    orgController.getOrganizationMembers
+    validate(organizationValidation.getMembers),
+    organizationController.getOrganizationMembers
   );
 
-// router
-//   .route("/:userId")
-//   .get(
-//     auth("getUsers"),
-//     validate(userValidation.getUser),
-//     userController.getUser
-//   )
-//   .patch(
-//     auth("manageUsers"),
-//     validate(userValidation.updateUser),
-//     userController.updateUser
-//   )
-//   .delete(
-//     auth("manageUsers"),
-//     validate(userValidation.deleteUser),
-//     userController.deleteUser
-//   );
+router
+  .route("/:organizationId")
+  .get(
+    auth("getOrganizations"),
+    validate(organizationValidation.getOrganization),
+    organizationController.getOrganization
+  )
+  .patch(
+    auth("manageOrganization"),
+    validate(organizationValidation.updateOrganization),
+    organizationController.updateOrganization
+  )
+  .delete(
+    auth("manageOrganization"),
+    validate(organizationValidation.deleteOrganization),
+    organizationController.deleteOrganization
+  );
 
 module.exports = router;
 
 /**
  * @swagger
  * tags:
- *   name: Users
- *   description: User management and retrieval
+ *   name: Organizations
+ *   description: Organization management and retrieval
  */
 
 /**
  * @swagger
- * /users:
+ * /organizations:
  *   post:
- *     summary: Create a user
- *     description: Only admins can create other users.
- *     tags: [Users]
+ *     summary: Create an organization
+ *     description: Only admins can create an organization.
+ *     tags: [Organizations]
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -77,8 +77,6 @@ module.exports = router;
  *             required:
  *               - name
  *               - email
- *               - password
- *               - role
  *             properties:
  *               name:
  *                 type: string
@@ -86,26 +84,16 @@ module.exports = router;
  *                 type: string
  *                 format: email
  *                 description: must be unique
- *               password:
- *                 type: string
- *                 format: password
- *                 minLength: 8
- *                 description: At least one number and one letter
- *               role:
- *                  type: string
- *                  enum: [physician, admin]
  *             example:
  *               name: fake name
  *               email: fake@example.com
- *               password: password1
- *               role: physician
  *     responses:
  *       "201":
  *         description: Created
  *         content:
  *           application/json:
  *             schema:
- *                $ref: '#/components/schemas/User'
+ *                $ref: '#/components/schemas/Organization'
  *       "400":
  *         $ref: '#/components/responses/DuplicateEmail'
  *       "401":
@@ -114,9 +102,214 @@ module.exports = router;
  *         $ref: '#/components/responses/Forbidden'
  *
  *   get:
- *     summary: Get all users
- *     description: Only admins can retrieve all users.
- *     tags: [Users]
+ *     summary: Get all organizations
+ *     description: Only admins can retrieve all organizations.
+ *     tags: [Organizations]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: name
+ *         schema:
+ *           type: string
+ *         description: Organization name
+ *       - in: query
+ *         name: sortBy
+ *         schema:
+ *           type: string
+ *         description: sort by query in the form of field:desc/asc (ex. name:asc)
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *         default: 10
+ *         description: Maximum number of organizations
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           default: 1
+ *         description: Page number
+ *     responses:
+ *       "200":
+ *         description: OK
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 results:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Organization'
+ *                 page:
+ *                   type: integer
+ *                   example: 1
+ *                 limit:
+ *                   type: integer
+ *                   example: 10
+ *                 totalPages:
+ *                   type: integer
+ *                   example: 1
+ *                 totalResults:
+ *                   type: integer
+ *                   example: 1
+ *       "401":
+ *         $ref: '#/components/responses/Unauthorized'
+ *       "403":
+ *         $ref: '#/components/responses/Forbidden'
+ */
+
+/**
+ * @swagger
+ * /organizations/{organizationId}:
+ *   get:
+ *     summary: Get an Organization
+ *     description: Only admins can fetch an organization.
+ *     tags: [Organizations]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: organizationId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Organization id
+ *     responses:
+ *       "200":
+ *         description: OK
+ *         content:
+ *           application/json:
+ *             schema:
+ *                $ref: '#/components/schemas/Organization'
+ *       "401":
+ *         $ref: '#/components/responses/Unauthorized'
+ *       "403":
+ *         $ref: '#/components/responses/Forbidden'
+ *       "404":
+ *         $ref: '#/components/responses/NotFound'
+ *
+ *   patch:
+ *     summary: Update a organization
+ *     description: Only admins can update their organization.
+ *     tags: [Organizations]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: organizationId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Organization id
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 description: must be unique
+ *             example:
+ *               name: fake name
+ *               email: fake@example.com
+ *     responses:
+ *       "200":
+ *         description: OK
+ *         content:
+ *           application/json:
+ *             schema:
+ *                $ref: '#/components/schemas/Organization'
+ *       "400":
+ *         $ref: '#/components/responses/DuplicateEmail'
+ *       "401":
+ *         $ref: '#/components/responses/Unauthorized'
+ *       "403":
+ *         $ref: '#/components/responses/Forbidden'
+ *       "404":
+ *         $ref: '#/components/responses/NotFound'
+ *
+ *   delete:
+ *     summary: Delete an organization
+ *     description: Only admins can delete the organization they created.
+ *     tags: [Organizations]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: organizationId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Organization id
+ *     responses:
+ *       "200":
+ *         description: No content
+ *       "401":
+ *         $ref: '#/components/responses/Unauthorized'
+ *       "403":
+ *         $ref: '#/components/responses/Forbidden'
+ *       "404":
+ *         $ref: '#/components/responses/NotFound'
+ */
+
+/**
+ * @swagger
+ * /organizations/{organizationId}/members:
+ *   post:
+ *     summary: Invite user to an organization
+ *     description: Only admins can invite a user to an organization.
+ *     tags: [Organizations]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: organizationId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Organization id
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 description: must be unique
+ *             example:
+ *               email: fake@example.com
+ *     responses:
+ *       "201":
+ *         description: Created
+ *         content:
+ *           application/json:
+ *             schema:
+ *                $ref: '#/components/schemas/Organization'
+ *       "400":
+ *         $ref: '#/components/responses/DuplicateEmail'
+ *       "401":
+ *         $ref: '#/components/responses/Unauthorized'
+ *       "403":
+ *         $ref: '#/components/responses/Forbidden'
+ *
+ *   get:
+ *     summary: Get members of an organization
+ *     description: Only admins can retrieve all members of an organizations.
+ *     tags: [Organizations]
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -126,10 +319,11 @@ module.exports = router;
  *           type: string
  *         description: User name
  *       - in: query
- *         name: role
+ *         name: email
  *         schema:
  *           type: string
- *         description: User role
+ *           format: email
+ *         description: User email
  *       - in: query
  *         name: sortBy
  *         schema:
@@ -177,109 +371,4 @@ module.exports = router;
  *         $ref: '#/components/responses/Unauthorized'
  *       "403":
  *         $ref: '#/components/responses/Forbidden'
- */
-
-/**
- * @swagger
- * /users/{id}:
- *   get:
- *     summary: Get a user
- *     description: Logged in users can fetch only their own user information. Only admins can fetch other users.
- *     tags: [Users]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *         description: User id
- *     responses:
- *       "200":
- *         description: OK
- *         content:
- *           application/json:
- *             schema:
- *                $ref: '#/components/schemas/User'
- *       "401":
- *         $ref: '#/components/responses/Unauthorized'
- *       "403":
- *         $ref: '#/components/responses/Forbidden'
- *       "404":
- *         $ref: '#/components/responses/NotFound'
- *
- *   patch:
- *     summary: Update a user
- *     description: Logged in users can only update their own information. Only admins can update other users.
- *     tags: [Users]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *         description: User id
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               name:
- *                 type: string
- *               email:
- *                 type: string
- *                 format: email
- *                 description: must be unique
- *               password:
- *                 type: string
- *                 format: password
- *                 minLength: 8
- *                 description: At least one number and one letter
- *             example:
- *               name: fake name
- *               email: fake@example.com
- *               password: password1
- *     responses:
- *       "200":
- *         description: OK
- *         content:
- *           application/json:
- *             schema:
- *                $ref: '#/components/schemas/User'
- *       "400":
- *         $ref: '#/components/responses/DuplicateEmail'
- *       "401":
- *         $ref: '#/components/responses/Unauthorized'
- *       "403":
- *         $ref: '#/components/responses/Forbidden'
- *       "404":
- *         $ref: '#/components/responses/NotFound'
- *
- *   delete:
- *     summary: Delete a user
- *     description: Logged in users can delete only themselves. Only admins can delete other users.
- *     tags: [Users]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *         description: User id
- *     responses:
- *       "200":
- *         description: No content
- *       "401":
- *         $ref: '#/components/responses/Unauthorized'
- *       "403":
- *         $ref: '#/components/responses/Forbidden'
- *       "404":
- *         $ref: '#/components/responses/NotFound'
  */
