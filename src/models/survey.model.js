@@ -1,21 +1,100 @@
 const mongoose = require("mongoose");
 const { toJSON, paginate } = require("./plugins");
+const { inputTypes } = require("../config/inputs");
 
 const Schema = mongoose.Schema;
 const ObjectId = Schema.ObjectId;
 
 const preferenceSchema = new mongoose.Schema({
-  membersCanSendManual: {
-    type: Boolean,
-  },
   sendOnTeamBehalf: {
     type: Boolean,
   },
 })
 
-const surveySchema = mongoose.Schema(
+const questionSchema = mongoose.Schema(
   {
     name: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    title: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    description: {
+      type: String,
+      trim: true,
+    },
+    type: {
+      type: String,
+      required: true,
+      enum: inputTypes,
+      default: "text",
+      trim: true,
+    },
+    inputType: {
+      type: String,
+      enum: ['text', 'number', 'url', 'email'],
+      default: "text",
+      trim: true,
+    },
+    isRequired: {
+      type: Boolean,
+      default: true
+    },
+    choices: [{
+      type: String,
+    }],
+    columns: [{
+      type: String,
+    }],
+    rows: [{
+      value: String,
+      text: String
+    }],
+
+    /** rating type */
+
+    rateMin: {
+      type: Number,
+    },
+    rateMax: {
+      type: Number,
+    },
+    minRateDescription: {
+      type: String,
+    },
+    maxRateDescription: {
+      type: String,
+    },
+    /** end rating type */
+    order: {
+      type: Number,
+    },
+    placeholder: {
+      type: String,
+      trim: true,
+    },
+    showOtherItem: {
+      type: Boolean,
+    },
+    otherPlaceholder: {
+      type: String,
+    },
+    otherText: {
+      type: String,
+    },
+  },
+  {
+    timestamps: true,
+  }
+);
+
+const surveySchema = mongoose.Schema(
+  {
+    title: {
       type: String,
       required: true,
       trim: true,
@@ -35,6 +114,9 @@ const surveySchema = mongoose.Schema(
     },
     preferences: {
       type: preferenceSchema
+    },
+    elements: {
+      type: [questionSchema]
     }
   },
   {

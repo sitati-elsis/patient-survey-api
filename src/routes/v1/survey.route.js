@@ -9,7 +9,7 @@ const router = express.Router();
 router
   .route("/")
   .post(
-    // auth("manageSurveys"),
+    auth("manageSurveys"),
     validate(surveyValidation.createSurvey),
     surveyController.createSurvey
   )
