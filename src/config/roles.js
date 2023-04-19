@@ -4,6 +4,7 @@ const allRoles = {
     "getUsers", 
     "manageUsers", 
     "manageSurveys", 
+    "getSuveys",
     "manageOrganization", 
     "getOrganizations"
   ],

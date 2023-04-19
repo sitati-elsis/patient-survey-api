@@ -6,6 +6,7 @@ const Schema = mongoose.Schema;
 const ObjectId = Schema.ObjectId;
 
 const preferenceSchema = new mongoose.Schema({
+  _id: false,
   sendOnTeamBehalf: {
     type: Boolean,
   },
@@ -13,6 +14,7 @@ const preferenceSchema = new mongoose.Schema({
 
 const questionSchema = mongoose.Schema(
   {
+    _id: false,
     name: {
       type: String,
       required: true,
@@ -44,16 +46,25 @@ const questionSchema = mongoose.Schema(
       type: Boolean,
       default: true
     },
-    choices: [{
-      type: String,
-    }],
-    columns: [{
-      type: String,
-    }],
-    rows: [{
-      value: String,
-      text: String
-    }],
+    choices: {
+      type: [{
+        type: String,
+      }],
+      default: undefined
+    },
+    columns: {
+      type: [{
+        type: String,
+      }],
+      default: undefined
+    },
+    rows: {
+      type: [{
+        value: String,
+        text: String
+      }],
+      default: undefined
+    },
 
     /** rating type */
 
@@ -88,7 +99,7 @@ const questionSchema = mongoose.Schema(
     },
   },
   {
-    timestamps: true,
+    timestamps: false,
   }
 );
 
@@ -99,6 +110,10 @@ const surveySchema = mongoose.Schema(
       required: true,
       trim: true,
     },
+    description: {
+      type: String,
+      trim: true,
+    },
     logo: {
       type: String,
       trim: true,
@@ -106,6 +121,7 @@ const surveySchema = mongoose.Schema(
     organizationId: {
       type: mongoose.SchemaTypes.ObjectId,
       ref: 'Organization',
+      required: true,
     },
     deliveryMethods: {
       type: [String],

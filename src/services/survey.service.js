@@ -16,7 +16,8 @@ const createSurvey = async (organizationId, surveyBody) => {
   if (await Survey.nameExists(surveyBody.name, organization.id)) {
     throw new ApiError(httpStatus.BAD_REQUEST, 'A survey with the name already exists for this organization');
   }
-  return Survey.create(surveyBody);
+  const data = Object.assign(surveyBody, { organizationId })
+  return Survey.create(data);
 };
 
 /**

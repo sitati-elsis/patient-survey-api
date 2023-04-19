@@ -77,7 +77,7 @@ const updateSurvey = {
   body: Joi.object()
     .keys({
       description: Joi.string(),
-      name: Joi.string(),
+      title: Joi.string(),
       deliveryMethods: Joi.array().items(Joi.string()),
       preferences: Joi.object().keys({
         sendOnTeamBehalf: Joi.boolean(),
@@ -88,6 +88,7 @@ const updateSurvey = {
           title: Joi.string().required(),
           description: Joi.string(),
           type: Joi.string().required().valid(...inputTypes),
+          inputType: Joi.string(),
           isRequired: Joi.boolean(),
           choices: Joi.array().items(Joi.string()),
           columns: Joi.alternatives().conditional('type', {
