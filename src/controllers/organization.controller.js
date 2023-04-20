@@ -49,6 +49,15 @@ const getOrganizationMembers = catchAsync(async (req, res) => {
   res.send(result);
 });
 
+const getOrganizationSettings = catchAsync(async (req, res) => {
+  const organization = await organizationService.getOrganizatioById(req.params.organizationId);
+  if (!organization) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Organization not found');
+  }
+  const settings = pick(organization, [req.query.name])
+  res.send(settings);
+});
+
 module.exports = {
   createOrganization,
   getOrganizations,
@@ -56,5 +65,6 @@ module.exports = {
   updateOrganization,
   deleteOrganization,
   inviteMember,
-  getOrganizationMembers
+  getOrganizationMembers,
+  getOrganizationSettings
 };

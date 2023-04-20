@@ -19,20 +19,7 @@ router
     organizationController.getOrganizations
   );
 
-router
-  .route("/:organizationId/members")
-  .post(
-    auth("manageOrganization"),
-    validate(organizationValidation.inviteMember),
-    organizationController.inviteMember
-  )
-  .get(
-    auth("getOrganizations"),
-    validate(organizationValidation.getMembers),
-    organizationController.getOrganizationMembers
-  );
-
-router
+  router
   .route("/:organizationId")
   .get(
     auth("getOrganizations"),
@@ -48,6 +35,32 @@ router
     auth("manageOrganization"),
     validate(organizationValidation.deleteOrganization),
     organizationController.deleteOrganization
+  );
+
+router
+  .route("/:organizationId/members")
+  .post(
+    auth("manageOrganization"),
+    validate(organizationValidation.inviteMember),
+    organizationController.inviteMember
+  )
+  .get(
+    auth("getOrganizations"),
+    validate(organizationValidation.getMembers),
+    organizationController.getOrganizationMembers
+  );
+
+  router
+  .route("/:organizationId/settings")
+  .patch(
+    auth("manageOrganization"),
+    validate(organizationValidation.updateSettings),
+    organizationController.updateOrganization
+  )
+  .get(
+    auth("manageOrganization"),
+    validate(organizationValidation.getSettings),
+    organizationController.getOrganizationSettings
   );
 
 module.exports = router;

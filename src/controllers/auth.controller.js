@@ -1,4 +1,5 @@
 const httpStatus = require('http-status');
+const pick = require('../utils/pick');
 const catchAsync = require('../utils/catchAsync');
 const { authService, userService, tokenService, emailService, organizationService } = require('../services');
 
@@ -21,8 +22,9 @@ const login = catchAsync(async (req, res) => {
   const { email, password } = req.body;
   const user = await authService.loginUserWithEmailAndPassword(email, password);
   const tokens = await tokenService.generateAuthTokens(user);
-  const organization = await userService.getOrganiation(user.id)
-  const role = organization.users.find(u => u.userId.toString() === user.id)?.role
+  const userOrganization = await userService.getOrganiation(user.id)
+  const role = userOrganization.users.find(u => u.userId.toString() === user.id)?.role
+  const organization = pick(userOrganization, ['id', 'name', 'email'])
   res.send({ user, tokens, organization, role });
 });
 

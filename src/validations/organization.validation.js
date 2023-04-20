@@ -1,5 +1,6 @@
 const Joi = require("joi");
 const { objectId } = require("./custom.validation");
+const { frequencies, reportTypes } = require("../config/report");
 
 const createOrganization = {
   body: Joi.object().keys({
@@ -31,8 +32,61 @@ const updateOrganization = {
     .keys({
       email: Joi.string().email(),
       name: Joi.string(),
+      reportNotificationSettings: Joi.object()
+        .keys({
+          organization: Joi.object()
+            .keys({
+              sendPushNotifications: Joi.boolean(),
+              sendByEmail: Joi.boolean(),
+              frequency: Joi.string().valid(...frequencies),
+              reportInformation: Joi.array().items(Joi.string().valid(...reportTypes)),
+            }),
+          practitioner: Joi.object()
+            .keys({
+              sendPushNotifications: Joi.boolean(),
+              sendByEmail: Joi.boolean(),
+              frequency: Joi.string().valid(...frequencies),
+              reportInformation: Joi.array().items(Joi.string().valid(...reportTypes)),
+            }),
+        })
     })
     .min(1),
+};
+
+const updateSettings = {
+  params: Joi.object().keys({
+    organizationId: Joi.required().custom(objectId),
+  }),
+  body: Joi.object()
+    .keys({
+      reportNotificationSettings: Joi.object()
+        .keys({
+          organization: Joi.object()
+            .keys({
+              sendPushNotifications: Joi.boolean(),
+              sendByEmail: Joi.boolean(),
+              frequency: Joi.string().valid(...frequencies),
+              reportInformation: Joi.array().items(Joi.string().valid(...reportTypes)),
+            }),
+          practitioner: Joi.object()
+            .keys({
+              sendPushNotifications: Joi.boolean(),
+              sendByEmail: Joi.boolean(),
+              frequency: Joi.string().valid(...frequencies),
+              reportInformation: Joi.array().items(Joi.string().valid(...reportTypes)),
+            }),
+        })
+    })
+    .min(1),
+};
+
+const getSettings = {
+  params: Joi.object().keys({
+    organizationId: Joi.required().custom(objectId),
+  }),
+  query: Joi.object().keys({
+    name: Joi.string().valid('reportNotificationSettings'),
+  }),
 };
 
 const deleteOrganization = {
@@ -74,5 +128,7 @@ module.exports = {
   updateOrganization,
   deleteOrganization,
   inviteMember,
-  getMembers
+  getMembers,
+  updateSettings,
+  getSettings
 };

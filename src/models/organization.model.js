@@ -2,9 +2,32 @@ const mongoose = require("mongoose");
 const validator = require("validator");
 const { toJSON, paginate } = require("./plugins");
 const { roles } = require("../config/roles");
+const { reportTypes, frequencies } = require("../config/report");
 
 const Schema = mongoose.Schema;
 const ObjectId = Schema.ObjectId;
+const reportSettingsSchema = mongoose.Schema(
+    {
+        _id: false,
+        sendPushNotifications: {
+            type: Boolean,
+            default: false
+        },
+        sendByEmail: {
+            type: Boolean,
+            default: false
+        },
+        frequency: {
+            type: String,
+            default: 'weekly',
+            enum: frequencies
+        },
+        reportInformation: {
+            type: [String],
+            enum: reportTypes
+        },
+    }
+)
 const organizationSchema = mongoose.Schema(
     {
         name: {
@@ -36,6 +59,17 @@ const organizationSchema = mongoose.Schema(
                 default: "admin",
             }
         }],
+        reportNotificationSettings: {
+            type: mongoose.Schema({
+                _id: false,
+                organization: {
+                    type: reportSettingsSchema
+                },
+                practitioner: {
+                    type: reportSettingsSchema
+                }
+            })
+        }
     },
     {
         timestamps: true,

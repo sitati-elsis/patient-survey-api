@@ -147,7 +147,7 @@ const queryOrganizationMembers = async (organizationId, filter, options) => {
     userIds = organization.users.map(u => u.userId.toString())
   }
   if (userIds) {
-    otherFilters = Object.assign(otherFilters, { "_id": { "$in": userIds }})
+    otherFilters = Object.assign(otherFilters, { "_id": { "$in": userIds } })
   }
   const members = await userService.queryUsers(otherFilters, options);
   return members;
@@ -176,5 +176,5 @@ module.exports = {
   addUserById,
   inviteUserByEmail,
   deleteOrganizationById,
-  queryOrganizationMembers
+  queryOrganizationMembers,
 };

@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const { toJSON, paginate } = require("./plugins");
-const { inputTypes } = require("../config/inputs");
+const { inputTypes } = require("../config/input.fields");
 
 const Schema = mongoose.Schema;
 const ObjectId = Schema.ObjectId;

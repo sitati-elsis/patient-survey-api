@@ -1,6 +1,6 @@
 const Joi = require("joi");
 const { objectId } = require("./custom.validation");
-const { inputTypes } = require("../config/inputs");
+const { inputTypes } = require("../config/input.fields");
 
 const createSurvey = {
   query: Joi.object().keys({
