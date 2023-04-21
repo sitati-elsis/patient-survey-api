@@ -13,7 +13,7 @@ const createSurvey = async (organizationId, surveyBody) => {
   if (!organization) {
     throw new ApiError(httpStatus.NOT_FOUND, `Organization not found`);
   }
-  if (await Survey.nameExists(surveyBody.name, organization.id)) {
+  if (await Survey.nameExists(surveyBody.title, organization.id)) {
     throw new ApiError(httpStatus.BAD_REQUEST, 'A survey with the name already exists for this organization');
   }
   const data = Object.assign(surveyBody, { organizationId })

@@ -145,13 +145,13 @@ surveySchema.plugin(toJSON);
 surveySchema.plugin(paginate);
 
 /**
- * Check if survey name exists for same organization
- * @param {string} name - The survey's name
+ * Check if survey title exists for same organization
+ * @param {string} title - The survey's title
  * @param {ObjectId} [organizationId] - The id of the organization owning the survey
  * @returns {Promise<boolean>}
  */
-surveySchema.statics.nameExists = async function (name, organizationId, excludeSurveyId) {
-  const survey = await this.findOne({ name, organizationId, ...(excludeSurveyId && { _id: { $ne: excludeSurveyId } }) });
+surveySchema.statics.nameExists = async function (title, organizationId, excludeSurveyId) {
+  const survey = await this.findOne({ title, organizationId, ...(excludeSurveyId && { _id: { $ne: excludeSurveyId } }) });
   return !!survey;
 };
 
