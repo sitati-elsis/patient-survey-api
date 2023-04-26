@@ -39,12 +39,14 @@ const questionSchema = mongoose.Schema(
     inputType: {
       type: String,
       enum: ['text', 'number', 'url', 'email'],
-      default: "text",
       trim: true,
     },
     isRequired: {
       type: Boolean,
       default: true
+    },
+    visibleIf: {
+      type: String,
     },
     choices: {
       type: [{

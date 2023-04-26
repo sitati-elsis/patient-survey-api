@@ -22,6 +22,7 @@ const createSurvey = {
         type: Joi.string().required().valid(...inputTypes),
         inputType: Joi.string(),
         isRequired: Joi.boolean(),
+        visibleIf: Joi.string(),
         choices: Joi.array().items(Joi.string()),
         columns: Joi.alternatives().conditional('type', {
           is: 'matrix',
@@ -90,6 +91,7 @@ const updateSurvey = {
           type: Joi.string().required().valid(...inputTypes),
           inputType: Joi.string(),
           isRequired: Joi.boolean(),
+          visibleIf: Joi.string(),
           choices: Joi.array().items(Joi.string()),
           columns: Joi.alternatives().conditional('type', {
             is: 'matrix',
