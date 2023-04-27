@@ -1,12 +1,14 @@
 const allRoles = {
-  physician: ["getSuveys", "viewSurveys"],
+  physician: ["getSuveys", "viewSurveys", "getSurveyReplies"],
   admin: [
     "getUsers", 
     "manageUsers", 
     "manageSurveys", 
     "getSuveys",
     "manageOrganization", 
-    "getOrganizations"
+    "getOrganizations",
+    "manageSurveyReplies", 
+    "getSurveyReplies"
   ],
 };
 
