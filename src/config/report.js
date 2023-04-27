@@ -7,7 +7,7 @@ const types = {
   "popularity": "Popularity",
 };
 
-const frequencies = ['daily', 'weekly', 'monthly']
+const frequencies = ['daily', 'weekly', 'monthly', 'quarterly']
 
 const reportTypes = Object.keys(types);
 

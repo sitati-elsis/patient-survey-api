@@ -36,17 +36,19 @@ const updateOrganization = {
         .keys({
           organization: Joi.object()
             .keys({
-              sendPushNotifications: Joi.boolean(),
-              sendByEmail: Joi.boolean(),
-              frequency: Joi.string().valid(...frequencies),
-              reportInformation: Joi.array().items(Joi.string().valid(...reportTypes)),
+              enablePeriodicReports: Joi.boolean(),
+              reports: Joi.array().items(Joi.object().keys({
+                name: Joi.string(),
+                frequency: Joi.string().valid(...frequencies),
+              })),
             }),
           practitioner: Joi.object()
             .keys({
-              sendPushNotifications: Joi.boolean(),
-              sendByEmail: Joi.boolean(),
-              frequency: Joi.string().valid(...frequencies),
-              reportInformation: Joi.array().items(Joi.string().valid(...reportTypes)),
+              enablePeriodicReports: Joi.boolean(),
+              reports: Joi.array().items(Joi.object().keys({
+                name: Joi.string(),
+                frequency: Joi.string().valid(...frequencies),
+              })),
             }),
         })
     })
@@ -63,17 +65,19 @@ const updateSettings = {
         .keys({
           organization: Joi.object()
             .keys({
-              sendPushNotifications: Joi.boolean(),
-              sendByEmail: Joi.boolean(),
-              frequency: Joi.string().valid(...frequencies),
-              reportInformation: Joi.array().items(Joi.string().valid(...reportTypes)),
+              enablePeriodicReports: Joi.boolean(),
+              reports: Joi.array().items(Joi.object().keys({
+                name: Joi.string().valid(...reportTypes),
+                frequency: Joi.string().valid(...frequencies),
+              })),
             }),
           practitioner: Joi.object()
             .keys({
-              sendPushNotifications: Joi.boolean(),
-              sendByEmail: Joi.boolean(),
-              frequency: Joi.string().valid(...frequencies),
-              reportInformation: Joi.array().items(Joi.string().valid(...reportTypes)),
+              enablePeriodicReports: Joi.boolean(),
+              reports: Joi.array().items(Joi.object().keys({
+                name: Joi.string().valid(...reportTypes),
+                frequency: Joi.string().valid(...frequencies),
+              })),
             }),
         })
     })

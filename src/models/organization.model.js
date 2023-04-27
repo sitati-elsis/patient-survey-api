@@ -6,25 +6,26 @@ const { reportTypes, frequencies } = require("../config/report");
 
 const Schema = mongoose.Schema;
 const ObjectId = Schema.ObjectId;
+const reportSchema = mongoose.Schema({
+    _id: false,
+    name: {
+        type: String,
+        enum: reportTypes
+    },
+    frequency: {
+        type: String,
+        enum: frequencies
+    }
+})
 const reportSettingsSchema = mongoose.Schema(
     {
         _id: false,
-        sendPushNotifications: {
+        enablePeriodicReports: {
             type: Boolean,
             default: false
         },
-        sendByEmail: {
-            type: Boolean,
-            default: false
-        },
-        frequency: {
-            type: String,
-            default: 'weekly',
-            enum: frequencies
-        },
-        reportInformation: {
-            type: [String],
-            enum: reportTypes
+        reports: {
+            type: [reportSchema],
         },
     }
 )
