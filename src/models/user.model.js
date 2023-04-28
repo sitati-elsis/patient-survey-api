@@ -27,6 +27,10 @@ const userSchema = mongoose.Schema(
         }
       },
     },
+    phoneNumber: {
+      type: String,
+      trim: true,
+    },
     password: {
       type: String,
       required: true,
@@ -40,6 +44,10 @@ const userSchema = mongoose.Schema(
         }
       },
       private: true, // used by the toJSON plugin
+    },
+    specialty: {
+      type: String,
+      trim: true,
     },
     isEmailVerified: {
       type: Boolean,

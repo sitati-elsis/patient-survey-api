@@ -63,9 +63,26 @@ const sendTeamInvitationEmail = async (user, token) => {
   await sendEmail(to, template_id, template_data);
 };
 
+/**
+ * Send survey email to recipients
+ * @param {User} user
+ * @param {string} token
+ * @param {Object} metadata
+ * @returns {Promise}
+ */
+const sendSurveyEmail = async (recipient, token, {campaignId, surveyId}) => {
+  const { email: to } = recipient;
+  const accept_invite_link = `${config.webUrl}/survey/${surveyId}/?token=${token}&campaignId=${campaignId}`;
+  const template_id = config.email.sendgrid.templates.joinTeamInvitation
+  const template_data = { accept_invite_link }
+  console.log("sending email to: ", {to, template_id, template_data})
+  await sendEmail(to, template_id, template_data);
+};
+
 module.exports = {
   sendEmail,
   sendResetPasswordEmail,
   sendVerificationEmail,
-  sendTeamInvitationEmail
+  sendTeamInvitationEmail,
+  sendSurveyEmail
 };

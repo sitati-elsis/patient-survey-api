@@ -2,11 +2,14 @@ const httpStatus = require('http-status');
 const pick = require('../utils/pick');
 const ApiError = require('../utils/ApiError');
 const catchAsync = require('../utils/catchAsync');
-const { replyService } = require('../services');
+const { replyService, tokenService } = require('../services');
+const { tokenTypes } = require('../config/tokens');
 
 const createReply = catchAsync(async (req, res) => {
-  const { campaignId } = req.query
+  const { campaignId, token } = req.query
+  const surveyResponseTokenDoc = await tokenService.verifyToken(token, tokenTypes.SURVEY_RESPONSE);
   const reply = await replyService.createReply(campaignId, req.body);
+  surveyResponseTokenDoc.deleteOne()
   res.status(httpStatus.CREATED).send(reply);
 });
 

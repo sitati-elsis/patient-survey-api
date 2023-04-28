@@ -16,9 +16,12 @@ const envVarsSchema = Joi.object()
     JWT_RESET_PASSWORD_EXPIRATION_MINUTES: Joi.number()
       .default(10)
       .description('minutes after which reset password token expires'),
-    JWT_VERIFY_EMAIL_EXPIRATION_MINUTES: Joi.number()
+    JWT_SURVEY_RESPONSE_EXPIRATION_DAYS: Joi.number()
       .default(1440)
       .description('minutes after which verify email token expires'),
+    JWT_SURVEY_RESPONSE_EXPIRATION_HOURS: Joi.number()
+      .default(48)
+      .description('hours within which recipients can answer to the surveys'),
     EMAIL_FROM: Joi.string().description('the from field in the emails sent by the app'),
     SENDGRID_API_KEY: Joi.string().required().description('Sendgrid Mail Web Api Key for sending emails'),
     SENDGRID_VERIFY_EMAIL_TEMPLATE_ID: Joi.string().required().description('id of Sendgrid email template sent for user email verification'),
@@ -47,6 +50,7 @@ module.exports = {
     refreshExpirationDays: envVars.JWT_REFRESH_EXPIRATION_DAYS,
     resetPasswordExpirationMinutes: envVars.JWT_RESET_PASSWORD_EXPIRATION_MINUTES,
     verifyEmailExpirationMinutes: envVars.JWT_VERIFY_EMAIL_EXPIRATION_MINUTES,
+    surveyResponseExpirationHours: envVars.JWT_SURVEY_RESPONSE_EXPIRATION_HOURS,
   },
   email: {
     sendgrid: {

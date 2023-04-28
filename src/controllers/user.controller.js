@@ -2,11 +2,29 @@ const httpStatus = require('http-status');
 const pick = require('../utils/pick');
 const ApiError = require('../utils/ApiError');
 const catchAsync = require('../utils/catchAsync');
-const { userService } = require('../services');
+const { userService, organizationService } = require('../services');
+const { Organization } = require('../models');
 
 const createUser = catchAsync(async (req, res) => {
   const user = await userService.createUser(req.body);
   res.status(httpStatus.CREATED).send(user);
+});
+
+// test purpose only
+const createMDummyUsers = catchAsync(async (req, res) => {
+const {users} = req.body
+const response = []
+const organizations = await Organization.find()
+const organizationIds = organizations.map(org => org.id)
+for (let item of users) {
+  const user = await userService.createUser(item);
+  for(let orgId of organizationIds) {
+    await organizationService.addUserById(user.id, orgId, 'physician')
+  }
+  
+  response.push(user)
+}
+  res.status(httpStatus.CREATED).send(organizationIds);
 });
 
 const getUsers = catchAsync(async (req, res) => {
@@ -36,6 +54,7 @@ const deleteUser = catchAsync(async (req, res) => {
 
 module.exports = {
   createUser,
+  createMDummyUsers,
   getUsers,
   getUser,
   updateUser,

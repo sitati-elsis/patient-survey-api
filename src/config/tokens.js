@@ -4,6 +4,7 @@ const tokenTypes = {
   RESET_PASSWORD: 'resetPassword',
   VERIFY_EMAIL: 'verifyEmail',
   JOIN_TEAM: 'joinTeam',
+  SURVEY_RESPONSE: 'surveyResponse',
 };
 
 module.exports = {

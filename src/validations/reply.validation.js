@@ -4,6 +4,7 @@ const { objectId } = require("./custom.validation");
 const createReply = {
   query: Joi.object().keys({
     campaignId: Joi.string().required().custom(objectId),
+    token: Joi.string().required(),
   }),
   body: Joi.object().keys({
     response: Joi.array().items(Joi.object().keys({

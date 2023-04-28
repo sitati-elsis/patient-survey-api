@@ -144,6 +144,18 @@ const generateTeamInvitationToken = async (user) => {
   return teamInvitationToken;
 };
 
+/**
+ * Generate survey response token
+ * @param {User} user
+ * @returns {Promise<string>}
+ */
+const generateSurveyResponseToken = async (userId) => {
+  const expires = dayjs().add(config.jwt.surveyResponseExpirationHours, 'hours');
+  const surveyResponseToken = generateToken({ userId, expires, type: tokenTypes.SURVEY_RESPONSE });
+  await saveToken(surveyResponseToken, userId, expires, tokenTypes.SURVEY_RESPONSE);
+  return surveyResponseToken;
+};
+
 module.exports = {
   generateToken,
   saveToken,
@@ -151,5 +163,6 @@ module.exports = {
   generateAuthTokens,
   generateResetPasswordToken,
   generateVerifyEmailToken,
-  generateTeamInvitationToken
+  generateTeamInvitationToken,
+  generateSurveyResponseToken
 };

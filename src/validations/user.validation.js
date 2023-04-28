@@ -5,7 +5,9 @@ const createUser = {
   body: Joi.object().keys({
     email: Joi.string().required().email(),
     password: Joi.string().required().custom(password),
-    name: Joi.string().required(),
+    firstName: Joi.string().required(),
+    lastName: Joi.string().required(),
+    phoneNumber: Joi.string(),
   }),
 };
 
@@ -33,7 +35,9 @@ const updateUser = {
     .keys({
       email: Joi.string().email(),
       password: Joi.string().custom(password),
-      name: Joi.string(),
+      firstName: Joi.string().required(),
+      lastName: Joi.string().required(),
+      phoneNumber: Joi.string(),
     })
     .min(1),
 };

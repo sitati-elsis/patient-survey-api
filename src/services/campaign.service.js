@@ -1,6 +1,9 @@
 const httpStatus = require('http-status');
 const { Campaign, Survey } = require('../models');
 const ApiError = require('../utils/ApiError');
+const organizationService = require('./organization.service');
+const dummyPatients = require('../config/dummyPatients');
+const { tokenService, emailService } = require('.');
 
 /**
  * Create a campaign
@@ -13,7 +16,22 @@ const createCampaign = async (surveyId, campaignBody) => {
     throw new ApiError(httpStatus.NOT_FOUND, `Survey not found`);
   }
   const campaign = Object.assign(campaignBody, { surveyId })
-  return Campaign.create(campaign);
+  const newCampaign = await Campaign.create(campaign);
+  let practitionerIds = campaign?.recipientsByPractitioners?.practitionerIds || []
+  if (practitionerIds.length === 0) {
+    const organization = await organizationService.getOrganizatioById(survey.organizationId)
+    const { users } = organization
+    practitionerIds = users.map(u => u.userId.toString())
+    console.log({ practitionerIds })
+  }
+  const patients = dummyPatients.filter(p => practitionerIds.includes(p.doctor_id))
+  for (let patient of patients) {
+    const token = await tokenService.generateSurveyResponseToken(patient.doctor_id)
+    emailService.sendSurveyEmail(patient, token, { campaignId: newCampaign.id, surveyId })
+  }
+  
+  return newCampaign
+  // return Campaign.create(campaign);
 };
 
 /**
