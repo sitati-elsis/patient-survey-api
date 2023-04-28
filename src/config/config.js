@@ -27,6 +27,7 @@ const envVarsSchema = Joi.object()
     SENDGRID_VERIFY_EMAIL_TEMPLATE_ID: Joi.string().required().description('id of Sendgrid email template sent for user email verification'),
     SENDGRID_RESET_PASSWORD_TEMPLATE_ID: Joi.string().required().description('id of Sendgrid email template sent for user password reset'),
     SENDGRID_JOIN_TEAM_TEMPLATE_ID: Joi.string().required().description('id of Sendgrid email template sent for user to join an organization'),
+    SENDGRID_TAKE_SURVEY_TEMPLATE_ID: Joi.string().required().description('id of Sendgrid email template sent to patients to take a survey'),
   })
   .unknown();
 
@@ -59,6 +60,7 @@ module.exports = {
         verifyEmail: envVars.SENDGRID_VERIFY_EMAIL_TEMPLATE_ID,
         resetPassword: envVars.SENDGRID_RESET_PASSWORD_TEMPLATE_ID,
         joinTeamInvitation: envVars.SENDGRID_JOIN_TEAM_TEMPLATE_ID,
+        takeSurveyInvitation: envVars.SENDGRID_TAKE_SURVEY_TEMPLATE_ID
       }
     },
     from: envVars.EMAIL_FROM,

@@ -72,9 +72,9 @@ const sendTeamInvitationEmail = async (user, token) => {
  */
 const sendSurveyEmail = async (recipient, token, {campaignId, surveyId}) => {
   const { email: to } = recipient;
-  const accept_invite_link = `${config.webUrl}/survey/${surveyId}/?token=${token}&campaignId=${campaignId}`;
-  const template_id = config.email.sendgrid.templates.joinTeamInvitation
-  const template_data = { accept_invite_link }
+  const survey_link = `${config.webUrl}/survey/${surveyId}/?token=${token}&campaignId=${campaignId}`;
+  const template_id = config.email.sendgrid.templates.takeSurveyInvitation
+  const template_data = { survey_link, last_name: recipient.last_name }
   console.log("sending email to: ", {to, template_id, template_data})
   await sendEmail(to, template_id, template_data);
 };
