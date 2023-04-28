@@ -22,7 +22,6 @@ router
 router
   .route("/:surveyId")
   .get(
-    auth("getSuveys", "manageSurveys"),
     validate(surveyValidation.getSurvey),
     surveyController.getSurvey
   )
