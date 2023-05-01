@@ -42,7 +42,18 @@ const inviteMember = catchAsync(async (req, res) => {
 });
 
 const getOrganizationMembers = catchAsync(async (req, res) => {
-  const filter = pick(req.query, ['name', 'email', 'role']);
+  let filter = pick(req.query, ['firstName', 'lastName', 'email', 'role']);
+  const { searchTerm } = req.query
+  if (searchTerm) {
+    filter = Object.assign(filter, {
+      $or: [
+        { email: new RegExp('.*' + searchTerm + '.*', "i") },
+        { firstName: new RegExp('.*' + searchTerm + '.*', "i") },
+        { lastName: new RegExp('.*' + searchTerm + '.*', "i") }
+      ]
+    })
+  }
+  
   const options = pick(req.query, ['sortBy', 'limit', 'page']);
   const { organizationId } = req.params
   const result = await organizationService.queryOrganizationMembers(organizationId, filter, options);

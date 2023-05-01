@@ -116,7 +116,9 @@ const getMembers = {
     organizationId: Joi.required().custom(objectId),
   }),
   query: Joi.object().keys({
-    name: Joi.string(),
+    firstName: Joi.string(),
+    lastName: Joi.string(),
+    searchTerm: Joi.string(),
     email: Joi.string().email(),
     role: Joi.string(),
     sortBy: Joi.string(),

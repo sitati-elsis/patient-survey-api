@@ -12,23 +12,33 @@ const createUser = catchAsync(async (req, res) => {
 
 // test purpose only
 const createMDummyUsers = catchAsync(async (req, res) => {
-const {users} = req.body
-const response = []
-const organizations = await Organization.find()
-const organizationIds = organizations.map(org => org.id)
-for (let item of users) {
-  const user = await userService.createUser(item);
-  for(let orgId of organizationIds) {
-    await organizationService.addUserById(user.id, orgId, 'physician')
+  const { users } = req.body
+  const response = []
+  const organizations = await Organization.find()
+  const organizationIds = organizations.map(org => org.id)
+  for (let item of users) {
+    const user = await userService.createUser(item);
+    for (let orgId of organizationIds) {
+      await organizationService.addUserById(user.id, orgId, 'physician')
+    }
+
+    response.push(user)
   }
-  
-  response.push(user)
-}
   res.status(httpStatus.CREATED).send(organizationIds);
 });
 
 const getUsers = catchAsync(async (req, res) => {
-  const filter = pick(req.query, ['name', 'role']);
+  let filter = pick(req.query, ['firstName', 'lastName', 'email', 'role']);
+  const { searchTerm } = req.query
+  if (searchTerm) {
+    filter = Object.assign(filter, {
+      $or: [
+        { email: new RegExp('.*' + searchTerm + '.*', "i") },
+        { firstName: new RegExp('.*' + searchTerm + '.*', "i") },
+        { lastName: new RegExp('.*' + searchTerm + '.*', "i") }
+      ]
+    })
+  }
   const options = pick(req.query, ['sortBy', 'limit', 'page']);
   const result = await userService.queryUsers(filter, options);
   res.send(result);
