@@ -17,7 +17,7 @@ const createCampaign = async (surveyId, campaignBody) => {
   }
   const campaign = Object.assign(campaignBody, { surveyId })
   const newCampaign = await Campaign.create(campaign);
-  let practitionerIds = campaign?.recipientsByPractitioners?.practitionerIds || []
+  let practitionerIds = campaign?.practitionerIds || []
   if (practitionerIds.length === 0) {
     const organization = await organizationService.getOrganizatioById(survey.organizationId)
     const { users } = organization

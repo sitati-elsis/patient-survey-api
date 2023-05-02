@@ -44,6 +44,15 @@ const getSurveyById = async (id) => {
 };
 
 /**
+ * Get survey by organization id
+ * @param {ObjectId} id
+ * @returns {Promise<QueryResult>}
+ */
+const getSurveysByOrganizationId = async (organizationId) => {
+  return Survey.find({organizationId});
+};
+
+/**
  * Update survey by id
  * @param {ObjectId} surveyId
  * @param {Object} updateBody
@@ -82,4 +91,5 @@ module.exports = {
   querySurveys,
   updateSurveyById,
   deleteSurveyById,
+  getSurveysByOrganizationId
 };

@@ -13,16 +13,14 @@ const createCampaign = {
       afterDischarge: Joi.boolean(),
       dischargeStartDate: Joi.date(),
     }).or('afterDischarge', 'dischargeStartDate').min(1).max(1),
-    recipientsByPractitioners: Joi.object().keys({
-      practitionerIds: Joi.array().items(Joi.string().custom(objectId)), // ids of practitioners whose patients will receive survey. if empty, survey will be sent to all patients under all practitioners
-      startDate: Joi.date().required()
-    }).required(),
+    practitionerIds: Joi.array().items(Joi.string().custom(objectId)),
   }),
 };
 
 const getCampaigns = {
   query: Joi.object().keys({
     surveyId: Joi.string().custom(objectId),
+    organizationId: Joi.string().custom(objectId),
     type: Joi.string().valid(...surveyTypes),
     sortBy: Joi.string(),
     limit: Joi.number().integer(),
@@ -47,10 +45,7 @@ const updateCampaign = {
       afterDischarge: Joi.boolean(),
       dischargeStartDate: Joi.date()
     }),
-    recipientsByPractitioners: Joi.object().keys({
-      practitionerIds: Joi.array().items(Joi.string().custom(objectId)),
-      startDate: Joi.date()
-    }),
+    practitionerIds: Joi.array().items(Joi.string().custom(objectId)),
   }).min(1),
 };
 

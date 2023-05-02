@@ -14,16 +14,8 @@ const campaignSchema = mongoose.Schema(
       enum: surveyTypes,
       trim: true,
     },
-    recipientsByPractitioners: {
-      type: mongoose.Schema({
-        _id: false,
-        practitionerIds: {
-          type: [mongoose.SchemaTypes.ObjectId]
-        },
-        startDate: {
-          type: Date
-        }
-      })
+    practitionerIds: {
+      type: [mongoose.SchemaTypes.ObjectId]
     },
     deliverySchedule: {
       type: mongoose.Schema({
