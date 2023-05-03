@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const validator = require("validator");
 const bcrypt = require("bcryptjs");
 const { toJSON, paginate } = require("./plugins");
+const { accreditationTypes } = require("../config/accreditationTypes");
 
 const userSchema = mongoose.Schema(
   {
@@ -26,6 +27,10 @@ const userSchema = mongoose.Schema(
           throw new Error("Invalid email");
         }
       },
+    },
+    accreditation: {
+      type: String,
+      enum: Object.keys(accreditationTypes)
     },
     phoneNumber: {
       type: String,

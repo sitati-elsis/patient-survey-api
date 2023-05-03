@@ -1,5 +1,6 @@
 const Joi = require("joi");
 const { password, objectId } = require("./custom.validation");
+const { accreditationTypes } = require("../config/accreditationTypes");
 
 const createUser = {
   body: Joi.object().keys({
@@ -40,6 +41,7 @@ const updateUser = {
       firstName: Joi.string().required(),
       lastName: Joi.string().required(),
       phoneNumber: Joi.string(),
+      accreditation: Joi.string().valid(...Object.keys(accreditationTypes)),
     })
     .min(1),
 };
