@@ -11,14 +11,7 @@ const createCampaign = catchAsync(async (req, res) => {
 });
 
 const getCampaigns = catchAsync(async (req, res) => {
-  const filter = pick(req.query, ['surveyId', 'type']);
-  const { organizationId } = req.query
-  if (organizationId) {
-    const surveys = await surveyService.getSurveysByOrganizationId(organizationId)
-    filter.surveyId = {
-      $in: surveys.map(s => s.id)
-    }
-  }
+  const filter = pick(req.query, ['surveyId', 'organizationId', 'type']);
   const options = pick(req.query, ['sortBy', 'limit', 'page']);
   const result = await campaignService.queryCampaigns(filter, options);
   res.send(result);

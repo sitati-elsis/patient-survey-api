@@ -28,6 +28,7 @@ const envVarsSchema = Joi.object()
     SENDGRID_RESET_PASSWORD_TEMPLATE_ID: Joi.string().required().description('id of Sendgrid email template sent for user password reset'),
     SENDGRID_JOIN_TEAM_TEMPLATE_ID: Joi.string().required().description('id of Sendgrid email template sent for user to join an organization'),
     SENDGRID_TAKE_SURVEY_TEMPLATE_ID: Joi.string().required().description('id of Sendgrid email template sent to patients to take a survey'),
+    CAMPAIGNS_LIMIT_PER_ORGANIZATION: Joi.string().required().description('The maximum number of active campaigns an organization can have at a time'),
   })
   .unknown();
 
@@ -65,4 +66,7 @@ module.exports = {
     },
     from: envVars.EMAIL_FROM,
   },
+  campaigns: {
+    limitPerOrganization: envVars.CAMPAIGNS_LIMIT_PER_ORGANIZATION
+  }
 };

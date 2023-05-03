@@ -15,14 +15,16 @@ const createCampaign = async (surveyId, campaignBody) => {
   if (!survey) {
     throw new ApiError(httpStatus.NOT_FOUND, `Survey not found`);
   }
-  const campaign = Object.assign(campaignBody, { surveyId })
+  if (await Campaign.isOrganizationLimitReached(survey.organizationId)) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Limit for active campaigns reached for this organization');
+  }
+  const campaign = Object.assign(campaignBody, { surveyId, organizationId: survey.organizationId })
   const newCampaign = await Campaign.create(campaign);
   let practitionerIds = campaign?.practitionerIds || []
   if (practitionerIds.length === 0) {
     const organization = await organizationService.getOrganizatioById(survey.organizationId)
     const { users } = organization
     practitionerIds = users.map(u => u.userId.toString())
-    console.log({ practitionerIds })
   }
   const patients = dummyPatients.filter(p => practitionerIds.includes(p.doctor_id))
   for (let patient of patients) {
@@ -31,7 +33,6 @@ const createCampaign = async (surveyId, campaignBody) => {
   }
   
   return newCampaign
-  // return Campaign.create(campaign);
 };
 
 /**
