@@ -32,6 +32,10 @@ const userSchema = mongoose.Schema(
       type: String,
       enum: Object.keys(accreditationTypes)
     },
+    acceptedTerms: {
+      type: Boolean,
+      default: false,
+    },
     phoneNumber: {
       type: String,
       trim: true,

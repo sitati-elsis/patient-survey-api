@@ -8,6 +8,7 @@ const register = {
     firstName: Joi.string().required(),
     lastName: Joi.string().required(),
     accountName: Joi.string().required(),
+    acceptedTerms: Joi.boolean().required(),
   }),
 };
 
@@ -59,6 +60,7 @@ const acceptInvite = {
     firstName: Joi.string().required(),
     lastName: Joi.string().required(),
     password: Joi.string().required().custom(password),
+    acceptedTerms: Joi.boolean().required(),
   }),
 };
 
