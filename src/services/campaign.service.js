@@ -28,7 +28,10 @@ const createCampaign = async (surveyId, campaignBody) => {
   }
   const patients = dummyPatients.filter(p => practitionerIds.includes(p.doctor_id))
   for (let patient of patients) {
-    const token = await tokenService.generateSurveyResponseToken(patient.doctor_id)
+    const metadata = {
+      campaignId: newCampaign.id
+    }
+    const token = await tokenService.generateSurveyResponseToken(patient.doctor_id, metadata)
     emailService.sendSurveyEmail(patient, token, { campaignId: newCampaign.id, surveyId })
   }
   

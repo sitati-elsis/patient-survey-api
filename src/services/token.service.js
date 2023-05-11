@@ -35,12 +35,13 @@ const generateToken = ({ userId, expires, type, secret = config.jwt.secret, meta
  * @param {boolean} [blacklisted]
  * @returns {Promise<Token>}
  */
-const saveToken = async (token, userId, expires, type, blacklisted = false) => {
+const saveToken = async ({ token, userId, expires, type, blacklisted = false, metadata }) => {
   const tokenDoc = await Token.create({
     token,
     user: userId,
     expires: expires.toDate(),
     type,
+    metadata,
     blacklisted,
   });
   return tokenDoc;
@@ -80,7 +81,7 @@ const generateAuthTokens = async (user) => {
     expires: refreshTokenExpires,
     type: tokenTypes.REFRESH
   });
-  await saveToken(refreshToken, user.id, refreshTokenExpires, tokenTypes.REFRESH);
+  await saveToken({ token: refreshToken, userId: user.id, expires: refreshTokenExpires, type: tokenTypes.REFRESH });
 
   return {
     access: {
@@ -108,7 +109,7 @@ const generateResetPasswordToken = async (email) => {
   const resetPasswordToken = generateToken({
     userId: user.id, expires, type: tokenTypes.RESET_PASSWORD
   });
-  await saveToken(resetPasswordToken, user.id, expires, tokenTypes.RESET_PASSWORD);
+  await saveToken({ token: resetPasswordToken, userId: user.id, expires, type: tokenTypes.RESET_PASSWORD });
   return resetPasswordToken;
 };
 
@@ -120,7 +121,7 @@ const generateResetPasswordToken = async (email) => {
 const generateVerifyEmailToken = async (user) => {
   const expires = dayjs().add(config.jwt.verifyEmailExpirationMinutes, 'minutes');
   const verifyEmailToken = generateToken({ userId: user.id, expires, type: tokenTypes.VERIFY_EMAIL });
-  await saveToken(verifyEmailToken, user.id, expires, tokenTypes.VERIFY_EMAIL);
+  await saveToken({ token: verifyEmailToken, userId: user.id, expires, type: tokenTypes.VERIFY_EMAIL });
   return verifyEmailToken;
 };
 
@@ -140,7 +141,7 @@ const generateTeamInvitationToken = async (user) => {
       organizationId: user.organizationId
     }
   });
-  await saveToken(teamInvitationToken, user.id, expires, tokenTypes.JOIN_TEAM);
+  await saveToken({ token: teamInvitationToken, userId: user.id, expires, type: tokenTypes.JOIN_TEAM });
   return teamInvitationToken;
 };
 
@@ -149,10 +150,10 @@ const generateTeamInvitationToken = async (user) => {
  * @param {User} user
  * @returns {Promise<string>}
  */
-const generateSurveyResponseToken = async (userId) => {
+const generateSurveyResponseToken = async (userId, metadata) => {
   const expires = dayjs().add(config.jwt.surveyResponseExpirationHours, 'hours');
-  const surveyResponseToken = generateToken({ userId, expires, type: tokenTypes.SURVEY_RESPONSE });
-  await saveToken(surveyResponseToken, userId, expires, tokenTypes.SURVEY_RESPONSE);
+  const surveyResponseToken = generateToken({ userId, expires, type: tokenTypes.SURVEY_RESPONSE, metadata });
+  await saveToken({ token: surveyResponseToken, userId, expires, type: tokenTypes.SURVEY_RESPONSE, metadata });
   return surveyResponseToken;
 };
 

@@ -27,6 +27,15 @@ const tokenSchema = mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    metadata: {
+      type: new mongoose.Schema({
+        _id: false,
+        campaignId: {
+          type: mongoose.SchemaTypes.ObjectId,
+          ref: 'Campaign'
+        }
+      }),
+    },
   },
   {
     timestamps: true,
