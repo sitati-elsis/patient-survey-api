@@ -16,7 +16,7 @@ const createReply = {
 
 const getReplies = {
   query: Joi.object().keys({
-    replyId: Joi.string().custom(objectId),
+    campaignId: Joi.string().custom(objectId),
     sortBy: Joi.string(),
     limit: Joi.number().integer(),
     page: Joi.number().integer(),

@@ -41,7 +41,7 @@ const campaignSchema = mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ['active', 'paused', 'deleted'],
+      enum: ['active', 'paused', 'archived'],
       default: 'active'
     }
   },

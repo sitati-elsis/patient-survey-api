@@ -18,6 +18,9 @@ const replySchema = mongoose.Schema(
       ref: 'Campaign',
       required: true,
     },
+    patient: {
+      type: String,
+    },
     response: {
       type: [responseSchema],
       required: true,
