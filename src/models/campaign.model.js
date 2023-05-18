@@ -3,17 +3,35 @@ const { toJSON, paginate } = require("./plugins");
 const { surveyTypes } = require("../config/survey.types");
 const config = require("../config/config");
 
+const statisticsSchema = new mongoose.Schema(
+  {
+    _id: false,
+    recipients: {
+      type: Number,
+    },
+    responses: {
+      type: Number,
+    },
+    overallScore: {
+      type: Number,
+    },
+  },
+  {
+    timestamps: true,
+  }
+);
+
 const campaignSchema = mongoose.Schema(
   {
     surveyId: {
       type: mongoose.SchemaTypes.ObjectId,
-      ref: 'Survey',
-      required: true
+      ref: "Survey",
+      required: true,
     },
     organizationId: {
       type: mongoose.SchemaTypes.ObjectId,
-      ref: 'Organization',
-      required: true
+      ref: "Organization",
+      required: true,
     },
     type: {
       type: String,
@@ -22,28 +40,31 @@ const campaignSchema = mongoose.Schema(
       trim: true,
     },
     practitionerIds: {
-      type: [mongoose.SchemaTypes.ObjectId]
+      type: [mongoose.SchemaTypes.ObjectId],
     },
     deliverySchedule: {
       type: mongoose.Schema({
         _id: false,
         afterDischarge: {
-          type: Boolean
+          type: Boolean,
         },
         dischargeStartDate: {
-          type: Date
-        }
-      })
+          type: Date,
+        },
+      }),
     },
     autoPublish: {
       type: Boolean,
-      default: false
+      default: false,
     },
     status: {
       type: String,
-      enum: ['active', 'paused', 'archived'],
-      default: 'active'
-    }
+      enum: ["active", "paused", "archived"],
+      default: "active",
+    },
+    statistics: {
+      type: statisticsSchema,
+    },
   },
   {
     timestamps: true,
@@ -59,16 +80,30 @@ campaignSchema.plugin(paginate);
  * @param {string} organizationId - The organization's id
  * @returns {Promise<boolean>}
  */
-campaignSchema.statics.isOrganizationLimitReached = async function (organizationId) {
-  const currentCampaignsCount = await this.count({ organizationId, status: 'active' });
+campaignSchema.statics.isOrganizationLimitReached = async function (
+  organizationId
+) {
+  const currentCampaignsCount = await this.count({
+    organizationId,
+    status: "active",
+  });
   return currentCampaignsCount >= config.campaigns.limitPerOrganization;
 };
 
-campaignSchema.pre('validate', function (next) {
-  if((this.deliverySchedule.afterDischarge && this.deliverySchedule.dischargeStartDate) || (!this.deliverySchedule.afterDischarge && !this.deliverySchedule.dischargeStartDate))
-      return next(new Error("At least and Only one field(deliverySchedule.afterDischarge, deliverySchedule.dischargeStartDate) should be populated"))
-  next()
-})
+campaignSchema.pre("validate", function (next) {
+  if (
+    (this.deliverySchedule.afterDischarge &&
+      this.deliverySchedule.dischargeStartDate) ||
+    (!this.deliverySchedule.afterDischarge &&
+      !this.deliverySchedule.dischargeStartDate)
+  )
+    return next(
+      new Error(
+        "At least and Only one field(deliverySchedule.afterDischarge, deliverySchedule.dischargeStartDate) should be populated"
+      )
+    );
+  next();
+});
 
 /**
  * @typedef Campaign
