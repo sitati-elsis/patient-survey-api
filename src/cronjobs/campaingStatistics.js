@@ -20,25 +20,35 @@ const calculateCampaignStatistics = async () => {
     const ratingsQuestions = survey[0].elements
       .filter((element) => element.type === "rating" && element.rateMax !== 10)
       .map((e) => e.name);
-
     const replies = await Reply.aggregate([
-      { $unwind: "$response" },
+      {
+        $unwind: "$response",
+      },
       {
         $match: {
+          "response.answer": { $regex: /^[0-9.]+$/ }, // Filter out non-numeric values
           "response.question": { $in: ratingsQuestions },
           campaignId: new mongoose.Types.ObjectId(campaign.id),
         },
       },
       {
         $group: {
-          _id: "$campaignId",
-          totalScore: {
-            $sum: {
-              $toInt: "$response.answer",
-            },
+          _id: {
+            campaignId: "$campaignId",
+            answer: "$response.answer",
           },
-          count: {
-            $sum: 1,
+          count: { $sum: 1 },
+        },
+      },
+      {
+        $group: {
+          _id: "$_id.campaignId",
+          totalResponses: { $sum: "$count" },
+          answers: {
+            $push: {
+              answer: "$_id.answer",
+              count: "$count",
+            },
           },
         },
       },
@@ -46,24 +56,41 @@ const calculateCampaignStatistics = async () => {
         $project: {
           _id: 0,
           campaignId: "$_id",
-          averageScore: {
-            $divide: ["$totalScore", "$count"],
+          weightedAverage: {
+            $reduce: {
+              input: "$answers",
+              initialValue: 0,
+              in: {
+                $add: [
+                  "$$value",
+                  {
+                    $multiply: [
+                      {
+                        $toDouble: "$$this.answer",
+                      },
+                      {
+                        $divide: ["$$this.count", "$totalResponses"],
+                      },
+                    ],
+                  },
+                ],
+              },
+            },
           },
         },
       },
     ]);
-    let averageScore;
     if (replies.length === 0) {
-      averageScore = 0;
+      weightedAverage = 0;
     } else {
-      averageScore = replies[0].averageScore;
+      weightedAverage = replies[0].weightedAverage;
     }
     const existingCampaign = await Campaign.findById(campaign.id);
     Object.assign(existingCampaign, {
       statistics: {
         recipients: totalSurveysSent,
         responses: repliesCount,
-        overallScore: averageScore,
+        overallScore: weightedAverage,
       },
     });
 
