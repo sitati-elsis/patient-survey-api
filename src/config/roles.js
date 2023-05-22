@@ -8,7 +8,9 @@ const allRoles = {
     "manageOrganization", 
     "getOrganizations",
     "manageSurveyReplies", 
-    "getSurveyReplies"
+    "getSurveyReplies",
+    "getPatients",
+    "managePatients",
   ],
 };
 

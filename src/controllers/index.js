@@ -4,3 +4,4 @@ module.exports.organizationController = require('./organization.controller');
 module.exports.surveyController = require('./survey.controller');
 module.exports.campaignController = require('./campaign.controller');
 module.exports.replyController = require('./reply.controller');
+module.exports.patientController = require('./patient.controller');

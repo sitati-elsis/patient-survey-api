@@ -5,6 +5,7 @@ const organizationRoute = require('./organization.route');
 const surveyRoute = require('./survey.route');
 const campaignRoute = require('./campaign.route');
 const replyRoute = require('./reply.route');
+const patientRoute = require('./patient.route');
 const docsRoute = require('./docs.route');
 const config = require('../../config/config');
 
@@ -34,6 +35,10 @@ const defaultRoutes = [
   {
     path: '/replies',
     route: replyRoute,
+  },
+  {
+    path: '/patients',
+    route: patientRoute,
   },
 ];
 
