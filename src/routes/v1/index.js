@@ -9,6 +9,8 @@ const docsRoute = require("./docs.route");
 const reportsRoute = require("./reports.route");
 const facilityRoute = require("./facility.route")
 const config = require("../../config/config");
+const patientRoute = require('./patient.route');
+const config = require('../../config/config');
 
 const router = express.Router();
 
@@ -44,6 +46,9 @@ const defaultRoutes = [
   {
     path: "/facilities",
     route: facilityRoute,
+  }, 
+  { path: '/patients',
+    route: patientRoute,
   },
 ];
 
