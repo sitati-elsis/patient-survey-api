@@ -8,9 +8,9 @@ const replyRoute = require("./reply.route");
 const docsRoute = require("./docs.route");
 const reportsRoute = require("./reports.route");
 const facilityRoute = require("./facility.route")
-const config = require("../../config/config");
 const patientRoute = require('./patient.route');
-const config = require('../../config/config');
+const hookRoute = require('./hook.route');
+const config = require("../../config/config");
 
 const router = express.Router();
 
@@ -49,6 +49,10 @@ const defaultRoutes = [
   }, 
   { path: '/patients',
     route: patientRoute,
+  },
+  {
+    path: "/hooks",
+    route: hookRoute,
   },
 ];
 
