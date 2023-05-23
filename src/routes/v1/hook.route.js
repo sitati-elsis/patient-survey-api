@@ -1,12 +1,10 @@
 const express = require("express");
+const { eventController } = require("../../controllers");
 
 const router = express.Router();
 
 router
   .route("/mirth")
-  .post( async (req, res) => {
-    console.log(req.body)
-    res.send({message: req.body});
-  });
+  .post(eventController.createEvent);
 
 module.exports = router;
