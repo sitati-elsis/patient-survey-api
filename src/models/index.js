@@ -5,3 +5,4 @@ module.exports.Survey = require("./survey.model");
 module.exports.Campaign = require("./campaign.model");
 module.exports.Reply = require("./reply.model");
 module.exports.Facility = require("./facility.model");
+module.exports.Patient = require('./patient.model');

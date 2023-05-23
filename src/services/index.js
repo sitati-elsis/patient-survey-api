@@ -8,3 +8,4 @@ module.exports.campaignService = require("./campaign.service");
 module.exports.replyService = require("./reply.service");
 module.exports.reportsService = require("./reports.service");
 module.exports.facilityService = require("./facility.service");
+module.exports.patientService = require('./patient.service');

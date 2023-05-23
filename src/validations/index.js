@@ -5,3 +5,4 @@ module.exports.surveyValidation = require("./survey.validation");
 module.exports.campaignValidation = require("./campaign.validation");
 module.exports.replyValidation = require("./reply.validation");
 module.exports.facilityValidation = require("./facility.validation");
+module.exports.patientValidation = require('./patient.validation');

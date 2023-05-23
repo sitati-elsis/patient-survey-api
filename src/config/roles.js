@@ -12,6 +12,8 @@ const allRoles = {
     "viewAdminReports",
     "manageFacilities",
     "getFacilities",
+    "getPatients",
+    "managePatients",
   ],
 };
 
