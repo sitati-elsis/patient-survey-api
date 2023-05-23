@@ -48,7 +48,7 @@ const createCampaign = async (surveyId, campaignBody) => {
  * @returns {Promise<QueryResult>}
  */
 const queryCampaigns = async (filter, options) => {
-  const campaigns = await Campaign.paginate(filter, options);
+  const campaigns = await Campaign.paginate(filter, Object.assign(options, { populate: 'surveyId'}));
   return campaigns;
 };
 
