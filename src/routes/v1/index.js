@@ -8,11 +8,15 @@ const replyRoute = require("./reply.route");
 const docsRoute = require("./docs.route");
 const reportsRoute = require("./reports.route");
 const facilityRoute = require("./facility.route")
+<<<<<<< HEAD
 const patientRoute = require('./patient.route');
 const hookRoute = require('./hook.route');
 const config = require("../../config/config");
+=======
+>>>>>>> be356ed (api hooks route draft)
 const patientRoute = require('./patient.route');
-const config = require('../../config/config');
+const hookRoute = require('./hook.route');
+const config = require("../../config/config");
 
 const router = express.Router();
 
