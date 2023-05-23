@@ -28,7 +28,9 @@ const createReply = async (campaignId, replyBody, patient) => {
  * @returns {Promise<QueryResult>}
  */
 const queryReplies = async (filter, options) => {
-  const replies = await Reply.paginate(filter, options);
+  const replies = await Reply.paginate(filter, Object.assign(options, {
+    populate: 'campaignId.surveyId'
+  }));
   return replies;
 };
 
