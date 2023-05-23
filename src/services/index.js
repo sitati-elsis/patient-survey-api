@@ -7,3 +7,4 @@ module.exports.surveyService = require("./survey.service");
 module.exports.campaignService = require("./campaign.service");
 module.exports.replyService = require("./reply.service");
 module.exports.reportsService = require("./reports.service");
+module.exports.facilityService = require("./facility.service");
