@@ -10,6 +10,8 @@ const allRoles = {
     "manageSurveyReplies",
     "getSurveyReplies",
     "viewAdminReports",
+    "manageFacilities",
+    "getFacilities",
   ],
 };
 

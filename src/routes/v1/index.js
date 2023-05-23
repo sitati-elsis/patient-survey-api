@@ -7,6 +7,7 @@ const campaignRoute = require("./campaign.route");
 const replyRoute = require("./reply.route");
 const docsRoute = require("./docs.route");
 const reportsRoute = require("./reports.route");
+const facilityRoute = require("./facility.route")
 const config = require("../../config/config");
 
 const router = express.Router();
@@ -39,6 +40,10 @@ const defaultRoutes = [
   {
     path: "/reports",
     route: reportsRoute,
+  },
+  {
+    path: "/facilities",
+    route: facilityRoute,
   },
 ];
 
