@@ -8,11 +8,11 @@ const facilitySchema = new mongoose.Schema(
       trim: true,
       required: true,
     },
-    facilityId: {
+    facilityFhirId: {
       type: String,
       trim: true,
     },
-    facilityStatus: {
+    status: {
       type: String,
       enum: ["active", "inactive"],
       default: "active",

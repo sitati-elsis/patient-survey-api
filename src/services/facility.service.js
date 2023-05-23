@@ -27,39 +27,37 @@ const queryFacilities = async (filter, options) => {
 };
 
 /**
- * Get facility by name
- * @param {string} facilityName
+ * Get facility by id
+ * @param {string} id
  * @returns {Promise<Facility>}
  */
-const getFacilityByName = async (facilityName) => {
-  //currently getting facility by name since
-  // we don't have facility ids
-  return await Facility.findOne({ facilityName });
+const getFacilityById = async (id) => {
+  return await Facility.findById(id);
 };
 
 /**
- * Update facility by name
- * @param {string} facilityName
+ * Update facility by id
+ * @param {string} facilityId
  * @param {Object} updateBody
  * @returns {Promise<Facility>}
  */
-const updateFacilityByName = async (facilityName, updateBody) => {
-  const facility = await getFacilityByName(facilityName);
+const updateFacilityById = async (facilityId, updateBody) => {
+  const facility = await getFacilityById(facilityId);
   if (!facility) {
     throw new ApiError(httpStatus.NOT_FOUND, "Facility not found");
   }
   Object.assign(facility, updateBody);
-  await facility.updateOne(facility);
+  await facility.save();
   return facility;
 };
 
 /**
- * Delete facility by Name
- * @param {string} facilityName
+ * Delete facility by id
+ * @param {string} facilityId
  * @returns {Promise<Facility>}
  */
-const deleteFacilityByName = async (facilityName) => {
-  const facility = await getFacilityByName(facilityName);
+const deleteFacilityById = async (facilityId) => {
+  const facility = await getFacilityById(facilityId);
   if (!facility) {
     throw new ApiError(httpStatus.NOT_FOUND, "Facility not found");
   }
@@ -70,7 +68,7 @@ const deleteFacilityByName = async (facilityName) => {
 module.exports = {
   createFacility,
   queryFacilities,
-  getFacilityByName,
-  updateFacilityByName,
-  deleteFacilityByName,
+  getFacilityById,
+  updateFacilityById,
+  deleteFacilityById,
 };

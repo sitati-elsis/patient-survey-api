@@ -20,7 +20,7 @@ router
   );
 
 router
-  .route("/:facilityName")
+  .route("/:facilityId")
   .get(
     auth("getFacilities"),
     validate(facilityValidation.getFacility),
