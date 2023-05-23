@@ -54,6 +54,10 @@ const defaultRoutes = [
     path: "/hooks",
     route: hookRoute,
   },
+  {
+    path: "/hooks",
+    route: hookRoute,
+  },
 ];
 
 const devRoutes = [
