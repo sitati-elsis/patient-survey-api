@@ -3,6 +3,7 @@ const validator = require("validator");
 const { toJSON, paginate } = require("./plugins");
 const { roles } = require("../config/roles");
 const { reportTypes, frequencies } = require("../config/report");
+const { amenities } = require("../config/features");
 
 const Schema = mongoose.Schema;
 const ObjectId = Schema.ObjectId;
@@ -29,6 +30,40 @@ const reportSettingsSchema = mongoose.Schema(
         },
     }
 )
+
+const operationScheduleSchema = mongoose.Schema({
+    _id: false,
+    dayOfWeek: {
+        type: String,
+        enum: ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'],
+    },
+    startTime: {
+        type: String
+    },
+    endTime: {
+        type: String
+    }
+})
+const publicProfileSchema = mongoose.Schema({
+    _id: false,
+    showEmail: {
+        type: Boolean,
+        default: false
+    },
+    showPhone: {
+        type: Boolean,
+        default: false
+    },
+    amenities: {
+        type: [String],
+        enum: amenities
+    },
+    operationSchedule: {
+        type: [operationScheduleSchema]
+    }
+})
+
+
 const organizationSchema = mongoose.Schema(
     {
         name: {
@@ -48,9 +83,21 @@ const organizationSchema = mongoose.Schema(
                 }
             },
         },
+        description: {
+            type: String,
+        },
+        address: {
+            type: String,
+        },
+        phone: {
+            type: String,
+        },
         ownerId: {
             type: mongoose.SchemaTypes.ObjectId,
             ref: 'User',
+        },
+        profile: {
+            type: publicProfileSchema
         },
         users: [{
             userId: ObjectId,

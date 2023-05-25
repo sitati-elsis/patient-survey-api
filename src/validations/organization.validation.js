@@ -1,11 +1,16 @@
 const Joi = require("joi");
 const { objectId } = require("./custom.validation");
 const { frequencies, reportTypes } = require("../config/report");
+const { amenities } = require("../config/features");
 
+const daysOfWeek = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
 const createOrganization = {
   body: Joi.object().keys({
     email: Joi.string().required().email(),
     name: Joi.string().required(),
+    description: Joi.string(),
+    address: Joi.string(),
+    phone: Joi.string(),
   }),
 };
 
@@ -32,6 +37,9 @@ const updateOrganization = {
     .keys({
       email: Joi.string().email(),
       name: Joi.string(),
+      description: Joi.string(),
+      address: Joi.string(),
+      phone: Joi.string(),
       reportNotificationSettings: Joi.object()
         .keys({
           organization: Joi.object()
@@ -50,6 +58,24 @@ const updateOrganization = {
                 frequency: Joi.string().valid(...frequencies),
               })),
             }),
+        }),
+      accountNotificationSettings: Joi.object()
+        .keys({
+          enableMobilePush: Joi.boolean(),
+          enableDesktopPush: Joi.boolean(),
+          enableEmailNotification: Joi.boolean(),
+          activeEmailNotification: Joi.boolean(),
+        }),
+      profile: Joi.object()
+        .keys({
+          showEmail: Joi.boolean(),
+          showPhone: Joi.boolean(),
+          amenities: Joi.array().items(Joi.string().valid(...amenities)),
+          operationSchedule: Joi.array().items(Joi.object().keys({
+            dayOfWeek: Joi.string().valid(...daysOfWeek),
+            startTime: Joi.date(),
+            endTime: Joi.date(),
+          })),
         })
     })
     .min(1),
