@@ -8,6 +8,14 @@ const getCampaignStatistics = catchAsync(async (req, res) => {
   res.send(campaignStatistics);
 });
 
+const getPractionerEngagements = catchAsync(async (req, res) => {
+  const practionerEngangements =
+    await reportsService.getPractionerEngagements();
+
+  res.send(practionerEngangements);
+});
+
 module.exports = {
   getCampaignStatistics,
+  getPractionerEngagements,
 };

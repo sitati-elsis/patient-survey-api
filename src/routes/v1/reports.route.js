@@ -8,4 +8,7 @@ router
   .route("/")
   .get(auth("viewAdminReports"), reportsControler.getCampaignStatistics);
 
+router
+  .route("/practionerReports")
+  .get(auth("viewAdminReports"), reportsControler.getPractionerEngagements);
 module.exports = router;
