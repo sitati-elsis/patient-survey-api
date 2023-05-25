@@ -1,6 +1,6 @@
-const httpStatus = require('http-status');
-const { Campaign, Reply } = require('../models');
-const ApiError = require('../utils/ApiError');
+const httpStatus = require("http-status");
+const { Campaign, Reply } = require("../models");
+const ApiError = require("../utils/ApiError");
 
 /**
  * Create a survey reply
@@ -8,12 +8,13 @@ const ApiError = require('../utils/ApiError');
  * @param {Object} replyBody
  * @returns {Promise<Reply>}
  */
-const createReply = async (campaignId, replyBody) => {
+const createReply = async (campaignId, replyBody, patient) => {
   const campaign = await Campaign.findById(campaignId);
   if (!campaign) {
     throw new ApiError(httpStatus.NOT_FOUND, `Campaign not found`);
   }
-  const reply = Object.assign(replyBody, { campaignId })
+  const reply = Object.assign(replyBody, { campaignId }, { patient });
+  console.log();
   return Reply.create(reply);
 };
 
@@ -51,7 +52,7 @@ const getReplyById = async (id) => {
 const updateReplyById = async (replyId, updateBody) => {
   const reply = await getReplyById(replyId);
   if (!reply) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Reply not found');
+    throw new ApiError(httpStatus.NOT_FOUND, "Reply not found");
   }
   Object.assign(reply, updateBody);
   await reply.save();
@@ -66,7 +67,7 @@ const updateReplyById = async (replyId, updateBody) => {
 const deleteReplyById = async (replyId) => {
   const reply = await getReplyById(replyId);
   if (!reply) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Reply not found');
+    throw new ApiError(httpStatus.NOT_FOUND, "Reply not found");
   }
   await reply.deleteOne();
   return reply;

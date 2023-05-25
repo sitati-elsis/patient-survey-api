@@ -52,7 +52,7 @@ const dummyPatients = [
     first_name: "sikumba",
     last_name: "Testi",
     phone_number: "555-456-7893",
-    email: "elsis@jnngroup.com",
+    email: "sitatielsis@gmail.com",
     doctor_id: "6464deb57004fdf98b65f281",
   },
 ];

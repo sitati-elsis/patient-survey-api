@@ -1,9 +1,9 @@
-const httpStatus = require('http-status');
-const { Campaign, Survey } = require('../models');
-const ApiError = require('../utils/ApiError');
-const organizationService = require('./organization.service');
-const dummyPatients = require('../config/dummyPatients');
-const { tokenService, emailService } = require('.');
+const httpStatus = require("http-status");
+const { Campaign, Survey } = require("../models");
+const ApiError = require("../utils/ApiError");
+const organizationService = require("./organization.service");
+const dummyPatients = require("../config/dummyPatients");
+const { tokenService, emailService } = require(".");
 
 /**
  * Create a campaign
@@ -16,26 +16,43 @@ const createCampaign = async (surveyId, campaignBody) => {
     throw new ApiError(httpStatus.NOT_FOUND, `Survey not found`);
   }
   if (await Campaign.isOrganizationLimitReached(survey.organizationId)) {
-    throw new ApiError(httpStatus.BAD_REQUEST, 'Limit for active campaigns reached for this organization');
+    throw new ApiError(
+      httpStatus.BAD_REQUEST,
+      "Limit for active campaigns reached for this organization"
+    );
   }
-  const campaign = Object.assign(campaignBody, { surveyId, organizationId: survey.organizationId })
+  const campaign = Object.assign(campaignBody, {
+    surveyId,
+    organizationId: survey.organizationId,
+  });
   const newCampaign = await Campaign.create(campaign);
-  let practitionerIds = campaign?.practitionerIds || []
+  let practitionerIds = campaign?.practitionerIds || [];
   if (practitionerIds.length === 0) {
-    const organization = await organizationService.getOrganizatioById(survey.organizationId)
-    const { users } = organization
-    practitionerIds = users.map(u => u.userId.toString())
+    const organization = await organizationService.getOrganizatioById(
+      survey.organizationId
+    );
+    const { users } = organization;
+    practitionerIds = users.map((u) => u.userId.toString());
   }
-  const patients = dummyPatients.filter(p => practitionerIds.includes(p.doctor_id))
+  const patients = dummyPatients.filter((p) =>
+    practitionerIds.includes(p.doctor_id)
+  );
   for (let patient of patients) {
     const metadata = {
-      campaignId: newCampaign.id
-    }
-    const token = await tokenService.generateSurveyResponseToken(patient.doctor_id, metadata)
-    emailService.sendSurveyEmail(patient, token, { campaignId: newCampaign.id, surveyId })
+      campaignId: newCampaign.id,
+      patient,
+    };
+    const token = await tokenService.generateSurveyResponseToken(
+      patient.doctor_id,
+      metadata
+    );
+    emailService.sendSurveyEmail(patient, token, {
+      campaignId: newCampaign.id,
+      surveyId,
+    });
   }
-  
-  return newCampaign
+
+  return newCampaign;
 };
 
 /**
@@ -70,7 +87,7 @@ const getCampaignById = async (id) => {
 const updateCampaignById = async (campaignId, updateBody) => {
   const campaign = await getCampaignById(campaignId);
   if (!campaign) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Campaign not found');
+    throw new ApiError(httpStatus.NOT_FOUND, "Campaign not found");
   }
   Object.assign(campaign, updateBody);
   await campaign.save();
@@ -85,7 +102,7 @@ const updateCampaignById = async (campaignId, updateBody) => {
 const deleteCampaignById = async (campaignId) => {
   const campaign = await getCampaignById(campaignId);
   if (!campaign) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Campaign not found');
+    throw new ApiError(httpStatus.NOT_FOUND, "Campaign not found");
   }
   await campaign.deleteOne();
   return campaign;
