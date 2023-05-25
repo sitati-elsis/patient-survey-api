@@ -117,7 +117,28 @@ const organizationSchema = mongoose.Schema(
                     type: reportSettingsSchema
                 }
             })
-        }
+        },
+        accountNotificationSettings: {
+            type: mongoose.Schema({
+                _id: false,
+                enableMobilePush: {
+                    type: Boolean,
+                    default: false
+                },
+                enableDesktopPush: {
+                    type: Boolean,
+                    default: false
+                },
+                enableEmailNotification: {
+                    type: Boolean,
+                    default: false
+                },
+                activeEmailNotification: {
+                    type: Boolean,
+                    default: false
+                }
+            })
+        },
     },
     {
         timestamps: true,
