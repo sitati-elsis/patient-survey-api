@@ -1,15 +1,16 @@
 const { Facility } = require("../models");
 
 /**
- * Create a organization
+ * Create a facility
+ * @param {ObjectId} organizationId
  * @param {Object} facility
  * @returns {Promise<Facility>}
  */
-const createFacility = async (facility) => {
+const createFacility = async (organizationId, facility) => {
   //curently not checking to see if a facility has a unique
   //name since it is my assumption that facilityId is the unique identifier
 
-  return await Facility.create(facility);
+  return await Facility.create(Object.assign(facility, { organizationId }));
 };
 
 /**

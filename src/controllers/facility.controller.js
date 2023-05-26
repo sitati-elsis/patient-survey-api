@@ -4,14 +4,16 @@ const { facilityService } = require("../services");
 const pick = require("../utils/pick");
 
 const createFacility = catchAsync(async (req, res) => {
-  const facility = await facilityService.createFacility(req.body);
+  const organizationId = req.organizationId
+  const facility = await facilityService.createFacility(organizationId, req.body);
   res.status(httpStatus.CREATED).send(facility);
 });
 
 const getFacilities = catchAsync(async (req, res) => {
-  const filter = pick(req.query, ["facilityName", "facilityFhirId", "status"]);
+  const filter = pick(req.query, ["name", "fhirId", "status"]);
   const options = pick(req.query, ["sortBy", "limit", "page"]);
-  const result = await facilityService.queryFacilities(filter, options);
+  const organizationId = req.organizationId
+  const result = await facilityService.queryFacilities(Object.assign(filter, { organizationId }), options);
   res.send(result);
 });
 

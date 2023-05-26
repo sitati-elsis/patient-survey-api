@@ -3,14 +3,19 @@ const { toJSON, paginate } = require("./plugins");
 
 const facilitySchema = new mongoose.Schema(
   {
-    facilityName: {
+    name: {
       type: String,
       trim: true,
       required: true,
     },
-    facilityFhirId: {
+    fhirId: {
       type: String,
       trim: true,
+    },
+    organizationId: {
+      type: mongoose.SchemaTypes.ObjectId,
+      ref: 'Organization',
+      required: true,
     },
     status: {
       type: String,
