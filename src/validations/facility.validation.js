@@ -3,15 +3,15 @@ const { objectId } = require("./custom.validation");
 
 const createFacility = {
   body: Joi.object().keys({
-    facilityName: Joi.string().required(),
-    facilityFhirId: Joi.string(),
+    name: Joi.string().required(),
+    fhirId: Joi.string(),
   }),
 };
 
 const getFacilities = {
   query: Joi.object().keys({
-    facilityName: Joi.string(),
-    facilityFhirId: Joi.string(),
+    name: Joi.string(),
+    fhirId: Joi.string(),
     status: Joi.string(),
     sortBy: Joi.string(),
     limit: Joi.number().integer(),
@@ -31,8 +31,8 @@ const updateFacility = {
   }),
   body: Joi.object()
     .keys({
-      facilityName: Joi.string(),
-      facilityFhirId: Joi.string(),
+      name: Joi.string(),
+      fhirId: Joi.string(),
       status: Joi.string(),
     })
     .min(1),
