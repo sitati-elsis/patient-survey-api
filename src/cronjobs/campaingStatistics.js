@@ -56,7 +56,7 @@ const calculateCampaignStatistics = async () => {
         $project: {
           _id: 0,
           campaignId: "$_id",
-          weightedAverage: {
+          weightedAverage: { 
             $reduce: {
               input: "$answers",
               initialValue: 0,
