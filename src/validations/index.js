@@ -7,3 +7,4 @@ module.exports.facilityValidation = require("./facility.validation");
 module.exports.reportsValidation = require("./reports.validation");
 module.exports.campaignValidation = require('./campaign.validation');
 module.exports.patientValidation = require('./patient.validation');
+module.exports.reportsValidation = require("./reports.validation");
