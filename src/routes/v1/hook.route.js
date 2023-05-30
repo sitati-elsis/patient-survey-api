@@ -33,5 +33,6 @@ router
     }
  
 }, eventController.createEvent);
+ 
 
 module.exports = router;
