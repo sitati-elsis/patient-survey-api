@@ -12,7 +12,7 @@ const getCampaignStatistics = async (
 ) => {
   let campaignInformation = [];
 
-  const query = { organizationId: organizationId };
+  const query = { organizationId };
   if (campaignId) {
     query._id = campaignId;
   }
@@ -20,13 +20,7 @@ const getCampaignStatistics = async (
   if (startDate && endDate) {
     query.createdAt = { $gte: new Date(startDate), $lte: new Date(endDate) };
   }
-  if (campaignId && startDate && endDate) {
-    (query._id = campaignId),
-      (query.createdAt = {
-        $gte: new Date(startDate),
-        $lte: new Date(endDate),
-      });
-  }
+  
   let organizationCampaigns;
   if (!practitionerId) {
     organizationCampaigns = await Campaign.find(query)
@@ -40,9 +34,9 @@ const getCampaignStatistics = async (
       campaignInformation.push({
         campaignName: campaign.surveyId.title,
         campaignType: campaign.type,
-        recipients: campaign.statistics.recipients,
-        responses: campaign.statistics.responses,
-        overalScore: campaign.statistics.overallScore,
+        recipients: campaign?.statistics?.recipients || 0,
+        responses: campaign?.statistics?.responses || 0,
+        overalScore: campaign?.statistics?.overallScore || 0,
       });
     }
   } else {
@@ -51,10 +45,8 @@ const getCampaignStatistics = async (
     const filter = {
       _id: { $in: campaignIds },
       organizationId: organizationId,
+      ...(startDate && endDate && {createdAt: { $gte: new Date(startDate), $lte: new Date(endDate) }})
     };
-    if (startDate && endDate) {
-      filter.createdAt = { $gte: new Date(startDate), $lte: new Date(endDate) };
-    }
     organizationCampaigns = await Campaign.find(filter)
       .populate("surveyId")
       .limit(limit * 1)
@@ -65,9 +57,9 @@ const getCampaignStatistics = async (
       campaignInformation.push({
         campaignName: campaign.surveyId.title,
         campaignType: campaign.type,
-        recipients: campaign.statistics.recipients,
-        responses: campaign.statistics.responses,
-        overalScore: campaign.statistics.overallScore,
+        recipients: campaign?.statistics?.recipients || 0,
+        responses: campaign?.statistics?.responses || 0,
+        overalScore: campaign?.statistics?.overallScore || 0,
       });
     }
   }
