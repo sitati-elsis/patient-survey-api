@@ -9,6 +9,7 @@ const register = {
     lastName: Joi.string().required(),
     accountName: Joi.string().required(),
     acceptedTerms: Joi.boolean().required(),
+    recaptcha: Joi.string(),
   }),
 };
 

@@ -29,6 +29,7 @@ const envVarsSchema = Joi.object()
     SENDGRID_JOIN_TEAM_TEMPLATE_ID: Joi.string().required().description('id of Sendgrid email template sent for user to join an organization'),
     SENDGRID_TAKE_SURVEY_TEMPLATE_ID: Joi.string().required().description('id of Sendgrid email template sent to patients to take a survey'),
     CAMPAIGNS_LIMIT_PER_ORGANIZATION: Joi.string().required().description('The maximum number of active campaigns an organization can have at a time'),
+    GOOGLE_RECAPTCHA_SECRET: Joi.string().required().description('Google recaptcha secret key to be used to verify recaptcha tokens')
   })
   .unknown();
 
@@ -68,5 +69,10 @@ module.exports = {
   },
   campaigns: {
     limitPerOrganization: envVars.CAMPAIGNS_LIMIT_PER_ORGANIZATION
+  },
+  google: {
+    recaptcha: {
+      secret: envVars.GOOGLE_RECAPTCHA_SECRET
+    }
   }
 };

@@ -4,7 +4,7 @@ const catchAsync = require('../utils/catchAsync');
 const { authService, userService, tokenService, emailService, organizationService } = require('../services');
 
 const register = catchAsync(async (req, res) => {
-  const {accountName, ...userBody} = req.body
+  const {accountName, recaptcha, ...userBody} = req.body
   const organizationBody = {
     name: accountName,
     email: req.body.email
