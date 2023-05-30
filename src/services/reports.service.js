@@ -102,7 +102,7 @@ const getPractionerEngagements = async (
     },
     {
       $project: {
-        userName: { $concat: ["$user.firstName", " ", "$user.lastName"] },
+        user: "$user",
         userId: "$_id",
         tokenCount: 1,
       },
@@ -125,7 +125,7 @@ const getPractionerEngagements = async (
     );
     const replyCount = matchingReply ? matchingReply.replyCount : 0;
     return {
-      userName: token.userName,
+      user: token.user,
       userId: token.userId,
       surveysSent: token.tokenCount + replyCount,
       responses: replyCount,
@@ -159,7 +159,8 @@ const getPractionerEngagements = async (
   return {
     currentPage: page,
     totalPages: Math.ceil(totalCount / limit),
-    data: paginatedResults,
+    results: paginatedResults,
+    totalResults: totalCount
   };
 };
 

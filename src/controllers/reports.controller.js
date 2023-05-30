@@ -22,7 +22,7 @@ const getCampaignStatistics = catchAsync(async (req, res) => {
   );
   const count = campaignStatistics.length;
   res.send({
-    campaignStatistics,
+    results: campaignStatistics,
     totalPages: Math.ceil(count / parseInt(limit)),
     currentPage: page,
   });
