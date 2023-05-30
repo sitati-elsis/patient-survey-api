@@ -7,9 +7,10 @@ const campaignRoute = require("./campaign.route");
 const replyRoute = require("./reply.route");
 const docsRoute = require("./docs.route");
 const reportsRoute = require("./reports.route");
-const facilityRoute = require("./facility.route")
-const patientRoute = require('./patient.route');
-const hookRoute = require('./hook.route');
+const facilityRoute = require("./facility.route");
+
+const patientRoute = require("./patient.route");
+const hookRoute = require("./hook.route");
 const config = require("../../config/config");
 
 const router = express.Router();
@@ -40,7 +41,7 @@ const defaultRoutes = [
     route: replyRoute,
   },
   {
-    path: '/patients',
+    path: "/patients",
     route: patientRoute,
   },
   {
@@ -51,6 +52,7 @@ const defaultRoutes = [
     path: "/facilities",
     route: facilityRoute,
   },
+  { path: "/patients", route: patientRoute },
   {
     path: "/hooks",
     route: hookRoute,
