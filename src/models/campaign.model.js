@@ -15,6 +15,12 @@ const statisticsSchema = new mongoose.Schema(
     overallScore: {
       type: Number,
     },
+    nps: {
+      type: Number,
+    },
+    detractorsCount: {
+      type: Number,
+    },
   },
   {
     timestamps: true,

@@ -1,4 +1,5 @@
 const { Campaign, Reply, Token, Survey } = require("../models");
+const mongoose = require("mongoose");
 
 const getCampaignStatistics = async (
   organizationId,
@@ -84,15 +85,9 @@ const getPractionerEngagements = async (
 ) => {
   const unresponsedSurvey = await Token.aggregate([
     {
-      $group: {
-        _id: "$user",
-        tokenCount: { $sum: 1 },
-      },
-    },
-    {
       $lookup: {
         from: "users",
-        localField: "_id",
+        localField: "user",
         foreignField: "_id",
         as: "user",
       },
@@ -101,39 +96,47 @@ const getPractionerEngagements = async (
       $unwind: "$user",
     },
     {
-      $project: {
-        user: "$user",
-        userId: "$_id",
-        tokenCount: 1,
+      $group: {
+        _id: "$user._id",
+        firstName: { $first: "$user.firstName" },
+        lastName: { $first: "$user.lastName" },
+        tokenCount: { $sum: 1 },
       },
     },
   ]);
 
+  const organizationObjectId = new mongoose.Types.ObjectId(organizationId);
   const respondedSurvey = await Reply.aggregate([
     {
       $group: {
         _id: "$patient.doctor_id",
         replyCount: { $sum: 1 },
         createdAt: { $first: "$createdAt" }, // Include createdAt field from Reply collection
+        organizationId: { $first: "$organizationId" },
       },
     },
   ]);
 
   let combinedResults = unresponsedSurvey.map((token) => {
     const matchingReply = respondedSurvey.find(
-      (reply) => String(reply._id) === String(token.userId)
+      (reply) => String(reply._id) === String(token._id)
     );
     const replyCount = matchingReply ? matchingReply.replyCount : 0;
     return {
-      user: token.user,
-      userId: token.userId,
+      userName: `${token.firstName} ${token.lastName}`,
+      userId: token._id,
       surveysSent: token.tokenCount + replyCount,
       responses: replyCount,
       ratio: (replyCount / (token.tokenCount + replyCount)) * 100,
       createdAt: matchingReply ? matchingReply.createdAt : null,
+      organizationId: matchingReply ? matchingReply.organizationId : null, // Include organizationId field in combinedResults
     };
   });
 
+  // Filter by organizationId
+  combinedResults = combinedResults.filter(
+    (result) => String(result.organizationId) === String(organizationId)
+  );
   // Apply filters
   if (practitionerId) {
     combinedResults = combinedResults.filter(

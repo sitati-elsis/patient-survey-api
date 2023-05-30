@@ -56,7 +56,7 @@ const calculateCampaignStatistics = async () => {
         $project: {
           _id: 0,
           campaignId: "$_id",
-          weightedAverage: { 
+          weightedAverage: {
             $reduce: {
               input: "$answers",
               initialValue: 0,
@@ -99,8 +99,92 @@ const calculateCampaignStatistics = async () => {
   logger.info(`updating campaigns statistics has ended at ${new Date()}`);
 };
 
+const calclulateNPS = async () => {
+  logger.info(
+    `updating campaigns statistics with nps info has started at ${new Date()}`
+  );
+  const organizationCampaigns = await Campaign.find({});
+  for (let campaign of organizationCampaigns) {
+    const survey = await Survey.find({ _id: campaign.surveyId });
+    const npsQuestions = survey[0].elements
+      .filter((element) => element.type === "rating" && element.rateMax === 10)
+      .map((e) => e.name);
+    const replies = await Reply.aggregate([
+      {
+        $unwind: "$response",
+      },
+      {
+        $match: {
+          "response.answer": { $regex: /^[0-9.]+$/ }, // Filter out non-numeric values
+          "response.question": { $in: npsQuestions },
+          campaignId: new mongoose.Types.ObjectId(campaign.id),
+        },
+      },
+      {
+        $group: {
+          _id: "$campaignId",
+          promoters: {
+            $sum: {
+              $cond: [{ $gte: ["$response.answer", 9] }, 1, 0],
+            },
+          },
+          detractors: {
+            $sum: {
+              $cond: [{ $lte: ["$response.answer", 6] }, 1, 0],
+            },
+          },
+          total: { $sum: 1 },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          campaignId: "$_id",
+          nps: {
+            $cond: [
+              {
+                $eq: ["$total", 0],
+              },
+              null,
+              {
+                $subtract: [
+                  {
+                    $divide: [{ $multiply: ["$promoters", 100] }, "$total"],
+                  },
+                  {
+                    $divide: [{ $multiply: ["$detractors", 100] }, "$total"],
+                  },
+                ],
+              },
+            ],
+          },
+          detractors: "$detractors", // Add detractors field
+        },
+      },
+    ]);
+    let nps;
+    let detractors;
+    if (replies.length === 0) {
+      nps = 0;
+      detractors = 0;
+    } else {
+      nps = replies[0].nps;
+      detractors = replies[0].detractors;
+    }
+
+    const existingCampaign = await Campaign.findById(campaign.id);
+    existingCampaign["statistics"]["nps"] = nps;
+    existingCampaign["statistics"]["detractorsCount"] = detractors;
+    await existingCampaign.updateOne(existingCampaign);
+  }
+  logger.info(
+    `updating campaigns statistics with nps info has ended at ${new Date()}`
+  );
+};
+
 module.exports = {
   updateCampaignStats: () => {
     cron.schedule("0 0 23 * * *", calculateCampaignStatistics);
+    cron.schedule("0 0 23 * * *", calclulateNPS);
   },
 };

@@ -44,6 +44,11 @@ const replySchema = mongoose.Schema(
     patient: {
       type: patientSchema,
     },
+    organizationId: {
+      type: mongoose.SchemaTypes.ObjectId,
+      ref: "Organization",
+      required: true,
+    },
   },
   {
     timestamps: true,
