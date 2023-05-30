@@ -13,7 +13,12 @@ const createReply = async (campaignId, replyBody, patient) => {
   if (!campaign) {
     throw new ApiError(httpStatus.NOT_FOUND, `Campaign not found`);
   }
-  const reply = Object.assign(replyBody, { campaignId }, { patient });
+  const reply = Object.assign(
+    replyBody,
+    { campaignId },
+    { patient },
+    { organizationId: campaign.organizationId }
+  );
   console.log();
   return Reply.create(reply);
 };
@@ -28,9 +33,12 @@ const createReply = async (campaignId, replyBody, patient) => {
  * @returns {Promise<QueryResult>}
  */
 const queryReplies = async (filter, options) => {
-  const replies = await Reply.paginate(filter, Object.assign(options, {
-    populate: 'campaignId.surveyId'
-  }));
+  const replies = await Reply.paginate(
+    filter,
+    Object.assign(options, {
+      populate: "campaignId.surveyId",
+    })
+  );
   return replies;
 };
 

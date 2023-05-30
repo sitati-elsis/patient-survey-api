@@ -6,7 +6,6 @@ const { replyService, tokenService } = require("../services");
 const { tokenTypes } = require("../config/tokens");
 
 const createReply = catchAsync(async (req, res) => {
-  console.log(`token information is ${req.metadata}`);
   const { campaignId, token } = req.query;
   const surveyResponseTokenDoc = await tokenService.verifyToken(
     token,
