@@ -1,4 +1,4 @@
-Experinio API
+Post Patient Visit Survey API
 
 - Installation
 Copy content of .env.example file into .env file and update the values appropriately
